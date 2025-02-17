@@ -14,8 +14,12 @@ function App() {
         <Routes>
           {/* Public routes - Landing Page */}
           <Route path="/" element={<LandingPage />} />
+
+          {/* Login Sign-up routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
+
+          
         </Routes>
       </div>
 

@@ -4,7 +4,7 @@ import styles from '../styles/Login.module.css';
 
 const Login = () => {
   const navigate = useNavigate();
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.formContainer}>
@@ -22,10 +22,7 @@ const Login = () => {
         </form>
         <p className={styles.signUpText}>
           Don’t have an account?{' '}
-          <span
-            className={styles.signUpLink}
-            onClick={() => navigate('/sign-up')}
-          >
+          <span className={styles.signUpLink} onClick={() => navigate('/sign-up')}>
             Sign up
           </span>
         </p>

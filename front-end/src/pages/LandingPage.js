@@ -9,11 +9,13 @@ const LandingPage = () => {
             <div className={styles.overlay}></div>
             <div className={styles.content}>
                 <img src="/logo.png" alt="Chatbot Logo" className={styles.logo} />
-                <h1 className={styles.heading}>Welcome to EduChat AI</h1>
+                <h1 className={styles.heading}>Welcome to <span>EduChat AI</span></h1>
                 <p className={styles.subheading}>
                     Your AI-powered assistant to help students get quick answers, with instructors available to refine responses.
                 </p>
-                <button className={styles.chatButton} onClick={() => navigate('/login')}>Log In To Get Started</button>
+                <button className={styles.chatButton} onClick={() => navigate('/login')}>
+                    Log In To Get Started
+                </button>
             </div>
         </div>
     );
