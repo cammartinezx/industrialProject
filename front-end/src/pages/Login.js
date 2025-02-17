@@ -18,7 +18,7 @@ const Login = () => {
             <label className={styles.label} htmlFor="password">Password</label>
             <input className={styles.input} type="password" id="password" name="password" required />
           </div>
-          <button className={styles.button} type="submit">Login</button>
+          <button className={styles.button} type="submit" onClick={() => navigate('/home')}>Login</button>
         </form>
         <p className={styles.signUpText}>
           Don’t have an account?{' '}
