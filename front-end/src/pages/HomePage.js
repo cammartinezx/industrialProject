@@ -4,8 +4,8 @@ import styles from '../styles/HomePage.module.css';
 import Header from '../Header';
 
 const courses = [
-  { id: 1, name: 'Math 1', image: 'math1.jpg' },
-  { id: 2, name: 'Math 2', image: 'math2.jpg' },
+  { id: 1, name: 'Math 1', description: 'Introduction to basic algebra and geometry.' },
+  { id: 2, name: 'Math 2', description: 'Advanced topics in calculus and linear algebra.' },
 ];
 
 const HomePage = () => {
@@ -41,8 +41,8 @@ const HomePage = () => {
         <div className={styles.courseList}>
           {courses.map((course) => (
             <div key={course.id} className={styles.courseCard}>
-              <img src={course.image} alt={course.name} className={styles.courseImage} />
-              <span>{course.name}</span>
+              <h3>{course.name}</h3>
+              <p>{course.description}</p>
               <button onClick={() => handleStartCourse(course)}>Start</button>
             </div>
           ))}
