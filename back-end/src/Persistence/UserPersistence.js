@@ -41,7 +41,7 @@ class UserPersistence {
                     name: name,
                     role: role,
                 },
-                ConditionExpression: "attribute_not_exists(user_id)",
+                ConditionExpression: "attribute_not_exists(email)",
             });
             await this.#doc_client.send(put_command);
             return { status: 200, message: "User Successfully created" };
