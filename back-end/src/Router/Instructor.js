@@ -99,3 +99,5 @@ router.get("/:id/courses-taught", (req, res) => {
 router.post("/:id/add-course", (req, res) => {
     instructor_handler.add_course(req, res);
 });
+
+module.exports = router;
