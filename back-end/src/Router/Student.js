@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router();
 const StudentHandler = require('../Handler/StudentHandler');
 
-const studenthandler = new StudentHandler(new StudentHandler());
+const student_handler = new StudentHandler(new StudentHandler());
 
 router.use("/", (req, res) => {
     res.status(200).json({ Message: "Welcome to the User paths" });
@@ -31,7 +31,7 @@ router.use("/", (req, res) => {
  */
 
 router.post("/:id/create-profile", (req, res) => {
-    student_profile_handler.create_profile(req, res);
+    student_handler.create_profile(req, res);
 });
 
 /**
@@ -52,10 +52,8 @@ router.post("/:id/create-profile", (req, res) => {
  * @response {Object} message Response message indicating success or failure.
  */
 router.patch("/:id/update-profile", (req, res) => {
-    student_profile_handler.update_profile(req, res);
+    student_handler.update_profile(req, res);
 });
-
-
 
 /**
  * @memberof Student
@@ -69,8 +67,42 @@ router.patch("/:id/update-profile", (req, res) => {
  * @response {Object} The student profile object
  */
 router.get("/:id/get-student", (req, res) => {
-    student_profile_handler.get_profile(req, res);
+    student_handler.get_profile(req, res);
 });
+
+
+/**
+ * @memberof Student
+ * @name Get courses enrolled by student
+ * @path {GET} /:id/courses
+ * @params {String} :id The user ID for the student
+ * @code {200} succesfully retrieved courses
+ * @code {404} User does not have a profile
+ * @code {404} Course not found
+ * @code {500} Error message from backend
+ * @response {JSON} List of courses
+ 
+ */
+router.get("/:id/courses", (req, res) => {
+    student_handler.get_courses_enrolled(req, res);
+});
+
+/**
+ * @memberof Student
+ * @name Add a course to student's profile
+ * @path {POST} /:id/add-course
+ * @params {String} :id The ID of the student adding the course.
+ * @body {String} course_id The ID of the course to be added.
+ * @code {200} Course added successfully.
+ * @code {422} Validation error in request data.
+ * @code {404} Student not found.
+ * @code {500} Backend error from the database.
+ * @response {Object} message Response message indicating success or failure.
+ */
+router.post("/:id/add-course", (req, res) => {
+    student_handler.add_course(req, res);
+});
+
 
 
 module.exports = router;
