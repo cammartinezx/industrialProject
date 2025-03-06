@@ -70,10 +70,10 @@ const Header = () => {
           href="#singup"
           className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
         >
-          Crear Cuenta
+          Sign Up
         </a>
         <Button className="hidden lg:flex" href="#login">
-          Iniciar sesión
+          Log In
         </Button>
 
         <Button
