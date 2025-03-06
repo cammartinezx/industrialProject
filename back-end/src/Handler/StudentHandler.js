@@ -5,6 +5,7 @@ const {
     validateDate,
     validateUserExist,
     validateNonEmptyList,
+    validatePositiveNumber,
 } = require("../Utility/validator");
 
 /**
@@ -74,7 +75,7 @@ class StudentHandler {
                 validateString(user_id, "user");
                 validateString(degree, "degree");
                 validateDate(dob);
-                validateNumber(gpa, "gpa");
+                validatePositiveNumber(gpa, "number");
                 validateString(preferred_learning_style, "preferred learning style");
                 validateString(preferred_language, "preferred language");
                 validateString(location, "location");
@@ -121,7 +122,7 @@ class StudentHandler {
                 validateString(user_id, "user");
                 validateString(degree, "degree");
                 validateDate(dob);
-                validateNumber(gpa, "gpa");
+                validatePositiveNumber(gpa, "number");
                 validateString(preferred_learning_style, "preferred learning style");
                 validateString(preferred_language, "preferred language");
                 validateString(location, "location");

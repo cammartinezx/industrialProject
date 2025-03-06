@@ -100,4 +100,8 @@ router.post("/:id/add-course", (req, res) => {
     instructor_handler.add_course(req, res);
 });
 
+router.use("/", (req, res) => {
+    res.status(200).json({ Message: "Welcome to the Instructor paths" });
+});
+
 module.exports = router;

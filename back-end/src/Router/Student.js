@@ -6,11 +6,9 @@ const express = require('express');
 const router = express.Router();
 const StudentHandler = require('../Handler/StudentHandler');
 
-const student_handler = new StudentHandler(new StudentHandler());
+const student_handler = new StudentHandler();
 
-router.use("/", (req, res) => {
-    res.status(200).json({ Message: "Welcome to the User paths" });
-});
+
 
 /**
  * @memberof Student
@@ -103,6 +101,9 @@ router.post("/:id/request-course", (req, res) => {
     student_handler.request_course(req, res);
 });
 
+router.use("/", (req, res) => {
+    res.status(200).json({ Message: "Welcome to the Student paths" });
+});
 
 
 module.exports = router;

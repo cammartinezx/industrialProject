@@ -4,7 +4,7 @@ function validateString(name, type) {
     }
 }
 
-function validatePositiveInteger(value, type) {
+function validatePositiveNumber(value, type) {
     if (typeof value !== "number" || value <= 0) throw new Error(`Invalid ${type}- ${type} must be a positive number`);
 }
 
@@ -61,7 +61,7 @@ function validateNonEmptyList(input_list, type) {
 
 module.exports = {
     validateString,
-    validatePositiveInteger,
+    validatePositiveNumber,
     validateEmail,
     validateUserExist,
     validateDate,

@@ -5,6 +5,7 @@ const Chatbot = require("./Chatbot");
 const Student = require("./Student");
 const Instructor = require("./Instructor");
 const Course = require("./Course");
+const Notification = require("./Notification");
 const cors = require('cors');
 
 require('dotenv').config(); // Load environment variables
@@ -19,6 +20,7 @@ app.use('/chatbot', Chatbot);
 app.use('/student', Student);
 app.use('/instructor', Instructor);
 app.use('/course', Course);
+app.use('/notification', Notification);
 
 app.use("/", (req, res) => {
     res.status(200).json({ Message: "Welcome to the main path" });
