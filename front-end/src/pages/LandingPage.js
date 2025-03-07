@@ -8,7 +8,7 @@ const LandingPage = () => {
         <div className={styles.landingContainer}>
             <div className={styles.overlay}></div>
             <div className={styles.content}>
-                <img src="/logo.png" alt="Chatbot Logo" className={styles.logo} />
+            <img src="/goc_logo.png" alt="Chatbot Logo" className={styles.logo} />
                 <h1 className={styles.heading}>Welcome to <span>EduChat AI</span></h1>
                 <p className={styles.subheading}>
                     Your AI-powered assistant to help students get quick answers, with instructors available to refine responses.
