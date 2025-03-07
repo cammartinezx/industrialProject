@@ -1,13 +1,13 @@
 import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
 import { edunova } from "../assets";
-import { navigation } from "../constants";
+import { navigationStudent } from "../constants";
 import Button from "./Button";
 import MenuSvg from "../assets/svg/MenuSvg";
 import { HamburgerMenu } from "./design/Header";
 import { useState } from "react";
 
-const Header = () => {
+const HeaderStudent = () => {
   const pathname = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
 
@@ -45,7 +45,7 @@ const Header = () => {
           } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent`}
         >
           <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
-            {navigation.map((item) => (
+            {navigationStudent.map((item) => (
               <a
                 key={item.id}
                 href={item.url}
@@ -66,14 +66,8 @@ const Header = () => {
           <HamburgerMenu />
         </nav>
 
-        <a
-          href="#singup"
-          className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
-        >
-          Sign Up
-        </a>
         <Button className="hidden lg:flex" href="/dashboard_student">
-          Log In
+          Log Out
         </Button>
 
         <Button
@@ -88,4 +82,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HeaderStudent;
