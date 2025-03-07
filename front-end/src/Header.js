@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
         <div className={styles.logo}>
-            <img src="/logo.png" alt="Chatbot Logo" onClick={() => navigate('/home')}/>
+            <img src="goc_logo2.png" alt="Chatbot Logo" onClick={() => navigate('/home')}/>
         </div>
         <div className={styles.icons}>
             <div className={styles.notificationWrapper}>
