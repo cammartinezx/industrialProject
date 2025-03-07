@@ -29,6 +29,24 @@ class CoursePersistence {
         return this.table_name;
     }
 
+    async get_course(course_id) {
+        console.log("luker");
+        const get_command = new GetCommand({
+            TableName: this.table_name,
+            Key: {
+                course_id: course_id,
+            },
+        });
+        
+        const response = await this.#doc_client.send(get_command);
+        let course = response.Item;
+        if (student === undefined) {
+            return null;
+        } else {
+            return course;
+        }
+    }
+
     async get_courses() {
         try {
             const scan_command = new ScanCommand({
@@ -42,6 +60,22 @@ class CoursePersistence {
             return { message: "Internal server error" };
         }
     }
+
+    async add_student(student_id, course_id) {
+        const update_command = new UpdateCommand({
+            TableName: this.table_name,
+            Key: {
+                course_id: course_id,
+            },
+            UpdateExpression: "SET student_list = list_append(if_not_exists(student_list, :empty_list), :student)",
+            ExpressionAttributeValues: {
+                ":student": [student_id],
+                ":empty_list": [],
+            },
+        });
+    
+        await this.#doc_client.send(update_command);
+    }    
 }
 
 module.exports = CoursePersistence;
