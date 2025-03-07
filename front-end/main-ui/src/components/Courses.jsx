@@ -7,7 +7,7 @@ import ClipPath from "../assets/svg/ClipPath";
 import Button from "./Button";
 import ButtonGradient from "../assets/svg/ButtonGradient";
 
-const Benefits = () => {
+const Courses = () => {
   return (
     <Section id="features">
       <div className="container relative z-2">
@@ -68,4 +68,4 @@ const Benefits = () => {
   );
 };
 
-export default Benefits;
+export default Courses;

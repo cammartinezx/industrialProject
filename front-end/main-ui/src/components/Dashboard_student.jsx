@@ -1,8 +1,8 @@
-import Benefits from "./Courses";
+import Courses from "./Courses";
 import Header from "./Header";
 import HeaderStudent from "./HeaderStudent";
 
-Benefits;
+Courses;
 
 
 
@@ -13,7 +13,7 @@ const Dashboard_student = () => {
         <HeaderStudent/>
      
 
-        <Benefits/>
+        <Courses/>
       
       </div>
      
