@@ -1,6 +1,8 @@
 const User = require("./Router/User.js");
 const Chatbot = require("./Router/Chatbot.js");
 const Course = require("./Router/Course.js");
+const Student = require("./Router/Student.js");
+const Instructor = require("./Router/Instructor.js");
 
 const express = require('express');
 const cors = require('cors');
@@ -14,6 +16,9 @@ app.use(cors());
 app.use("/user", User);
 app.use("/chatbot", Chatbot);
 app.use("/course", Course);
+app.use('/student', Student);
+app.use('/instructor', Instructor);
+//app.use('/course', Course);
 
 app.get("/", async (req, res) => {
     console.log(req.body);

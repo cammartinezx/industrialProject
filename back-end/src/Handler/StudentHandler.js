@@ -5,6 +5,7 @@ const {
     validateDate,
     validateUserExist,
     validateNonEmptyList,
+    validatePositiveNumber,
 } = require("../Utility/validator");
 
 /**
@@ -74,7 +75,7 @@ class StudentHandler {
                 validateString(user_id, "user");
                 validateString(degree, "degree");
                 validateDate(dob);
-                validateNumber(gpa, "gpa");
+                validatePositiveNumber(gpa, "number");
                 validateString(preferred_learning_style, "preferred learning style");
                 validateString(preferred_language, "preferred language");
                 validateString(location, "location");
@@ -121,7 +122,7 @@ class StudentHandler {
                 validateString(user_id, "user");
                 validateString(degree, "degree");
                 validateDate(dob);
-                validateNumber(gpa, "gpa");
+                validatePositiveNumber(gpa, "number");
                 validateString(preferred_learning_style, "preferred learning style");
                 validateString(preferred_language, "preferred language");
                 validateString(location, "location");
@@ -153,7 +154,6 @@ class StudentHandler {
         }
     }
     
-
     async get_student(request, response) {
         try {
             let user_id = request.params.id.trim().toLowerCase();
@@ -183,8 +183,57 @@ class StudentHandler {
             return response.status(500).json({ message: error.message });
         }
     }
-    
 
+    async get_courses_enrolled(request, response) {
+        try {
+            let user_id = request.params.id.trim().toLowerCase();
+            try {
+                validateString(user_id, "user");
+            } catch (error) {
+                return response.status(422).json({ message: error.message });
+            }
+            try {
+                await validateUserExist(this.#user_persistence, user_id);
+            } catch (error) {
+                return response.status(404).json({ message: error.message });
+            }
+            try {
+                let courses_enrolled = await this.#student_persistence.get_courses_enrolled(user_id);
+                return response.status(200).json({ courses_enrolled });
+            } catch (error) {
+                return response.status(404).json({ message: error.message });
+            }
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
+    
+    async request_course(request, response) {
+        try {
+            let user_id = request.params.id.trim().toLowerCase();
+            let course_id = request.body.course_id.trim().toLowerCase();
+            try {
+                validateString(user_id, "user");
+                validateString(course_id, "course");
+            } catch (error) {
+                return response.status(422).json({ message: error.message });
+            }
+            try {
+                await validateUserExist(this.#user_persistence, user_id);
+            } catch (error) {
+                return response.status(404).json({ message: error.message });
+            }
+            try {
+                let result = await this.#student_persistence.add_course(user_id, course_id);
+                return response.status(result.status).json({ message: result.message });
+            } catch (error) {
+                return response.status(500).json({ message: error.message });
+            }
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
+    
     
 }
 

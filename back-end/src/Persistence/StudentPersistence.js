@@ -2,7 +2,7 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand } = require("@aws-sdk/lib-dynamodb");
 require("dotenv").config();
 
-class InstructorPersistence {
+class StudentPersistence {
     #doc_client;
 
     #table_name;
@@ -19,7 +19,7 @@ class InstructorPersistence {
 
         let working_client = new DynamoDBClient(remote_client);
         this.#doc_client = DynamoDBDocumentClient.from(working_client);
-        this.#table_name = "instructor";
+        this.#table_name = "Student";
     }
 
     get_doc_client() {
@@ -30,103 +30,117 @@ class InstructorPersistence {
         return this.#table_name;
     }
 
-    async create_instructor(user_ID, department, preferred_language, dob, location) {
+    async create_student(user_id, degree, dob, gpa, preferred_learning_style, preferred_language, location) {
         try {
-            // Add the new instructor profile
+            // Add the new student profile
             const put_command = new PutCommand({
-                TableName: "Instructor",
+                TableName: "Student",
                 Item: {
-                    user_ID: user_ID,
-                    department: department,
-                    preferred_language: preferred_language,
+                    user_id: user_id,
+                    degree: degree,
                     dob: dob,
+                    gpa: gpa,
+                    preferred_learning_style: preferred_learning_style,
+                    preferred_language: preferred_language,
                     location: location,
                 },
-                ConditionExpression: "attribute_not_exists(user_ID)",
+                ConditionExpression: "attribute_not_exists(user_id)",
             });
     
             await this.#doc_client.send(put_command);
-            return { status: 200, message: "Instructor profile successfully created" };
+            return { status: 200, message: "Student profile successfully created" };
         } catch (error) {
             if (error.name === "ConditionalCheckFailedException") {
-                return { status: 400, message: "This instructor profile already exists" };
+                return { status: 400, message: "This student profile already exists" };
             } else {
                 throw error;
             }
         }
     }
-    async update_instructor(user_ID, department, preferred_language, dob, location) {
+    
+    async update_student(user_id, degree, dob, gpa, preferred_learning_style, preferred_language, location) {
         const update_command = new UpdateCommand({
-            TableName: "Instructor",
+            TableName: "Student",
             Key: {
-                user_ID: user_ID, // Partition key for the table
+                user_id: user_id, // Partition key for the table
             },
             UpdateExpression: `
-                set department = :department, 
-                    preferred_language = :preferred_language, 
+                set degree = :degree, 
                     dob = :dob, 
-                    location = :location
+                    gpa = :gpa, 
+                    preferred_learning_style = :preferred_learning_style, 
+                    preferred_language = :preferred_language, 
+                    #location = :location
             `,
+            ExpressionAttributeNames: {
+                "#location": "location",  // Using a placeholder for the reserved keyword
+            },
             ExpressionAttributeValues: {
-                ":department": department,
-                ":preferred_language": preferred_language,
+                ":degree": degree,
                 ":dob": dob,
+                ":gpa": gpa,
+                ":preferred_learning_style": preferred_learning_style,
+                ":preferred_language": preferred_language,
                 ":location": location,
             },
-            ConditionExpression: "attribute_exists(user_ID)", // Ensure the instructor exists
+            ConditionExpression: "attribute_exists(user_id)",
         });
     
         try {
             await this.#doc_client.send(update_command);
-            return { status: 200, message: "Instructor profile successfully updated" };
+            return { status: 200, message: "Student profile successfully updated" };
         } catch (error) {
             if (error.name === "ConditionalCheckFailedException") {
-                return { status: 400, message: "This instructor doesn't exist" };
+                return { status: 400, message: "This student doesn't exist" };
             } else {
                 throw error;
             }
         }
-    } 
-    async get_instructor(user_ID) {
+    }
+    
+    async get_student(user_id) {
         const get_command = new GetCommand({
-            TableName: "Instructor",
+            TableName: "Student",
             Key: {
-                user_ID: user_ID,
+                user_id: user_id,
             },
         });
     
         const response = await this.#doc_client.send(get_command);
-        let profile = response.Item;
-        if (!profile) {
+        let student = response.Item;
+        if (student === undefined) {
             return null;
         } else {
-            return profile;
+            return student;
         }
     }
-    async get_courses_taught(user_ID) {
+    
+    async get_courses_enrolled(user_id) {
         const get_command = new GetCommand({
-            TableName: "Instructor",
+            TableName: "Student",
             Key: {
-                user_ID: user_ID,
+                user_id: user_id,
             },
         });
-
+    
         const response = await this.#doc_client.send(get_command);
-
-        let courses_taught = response.Item?.courses_taught;
-        if (courses_taught===undefined) {
-            throw new Error("Instructor doesn't have a course assigned yet");
+    
+        let courses_enrolled = response.Item?.courses_enrolled;
+        if (courses_enrolled === undefined) {
+            courses_enrolled = [];
         }
-        return courses_taught;
+    
+        return courses_enrolled;
     }
+
     async add_course(user_id, course_id) {
         try{
         const update_command = new UpdateCommand({
             TableName: this.#table_name,
             Key: { user_id: user_id },
-            UpdateExpression: "ADD #courses_taught :new_course",
+            UpdateExpression: "ADD #courses_enrolled :new_course",
             ExpressionAttributeNames: {
-                "#courses_taught": "courses_taught", 
+                "#courses_enrolled": "courses_enrolled", 
             },
             ExpressionAttributeValues: {
                 ":new_course": new Set([course_id]), // The course to add as a single-element list
@@ -141,11 +155,9 @@ class InstructorPersistence {
             throw error;
         }
     }
+
     }
-
-
-    
     
 }
 
-module.exports = UserPersistence;
+module.exports = StudentPersistence;

@@ -6,11 +6,9 @@ const express = require('express');
 const router = express.Router();
 const StudentHandler = require('../Handler/StudentHandler');
 
-const student_handler = new StudentHandler(new StudentHandler());
+const student_handler = new StudentHandler();
 
-router.use("/", (req, res) => {
-    res.status(200).json({ Message: "Welcome to the User paths" });
-});
+
 
 /**
  * @memberof Student
@@ -30,8 +28,8 @@ router.use("/", (req, res) => {
  * @response {Object} message Response message indicating success or failure.
  */
 
-router.post("/:id/create-profile", (req, res) => {
-    student_handler.create_profile(req, res);
+router.post("/:id/create-student", (req, res) => {
+    student_handler.create_student(req, res);
 });
 
 /**
@@ -51,8 +49,8 @@ router.post("/:id/create-profile", (req, res) => {
  * @code {500} Backend error from the database.
  * @response {Object} message Response message indicating success or failure.
  */
-router.patch("/:id/update-profile", (req, res) => {
-    student_handler.update_profile(req, res);
+router.patch("/:id/update-student", (req, res) => {
+    student_handler.update_student(req, res);
 });
 
 /**
@@ -67,7 +65,7 @@ router.patch("/:id/update-profile", (req, res) => {
  * @response {Object} The student profile object
  */
 router.get("/:id/get-student", (req, res) => {
-    student_handler.get_profile(req, res);
+    student_handler.get_student(req, res);
 });
 
 
@@ -99,10 +97,13 @@ router.get("/:id/courses", (req, res) => {
  * @code {500} Backend error from the database.
  * @response {Object} message Response message indicating success or failure.
  */
-router.post("/:id/add-course", (req, res) => {
-    student_handler.add_course(req, res);
+router.post("/:id/request-course", (req, res) => {
+    student_handler.request_course(req, res);
 });
 
+router.use("/", (req, res) => {
+    res.status(200).json({ Message: "Welcome to the Student paths" });
+});
 
 
 module.exports = router;

@@ -63,26 +63,22 @@ class InstructorHandler {
     async create_instructor(request, response) {
         try {
             let user_id = request.params.id.trim().toLowerCase();
-            let location = request.body.location.trim().toLowerCase();
-         //   let availability = request.body.availability.trim().toLowerCase();
-            let dob = request.body.dob.trim().toLowerCase();
-            let preferred_language = request.body.preferred_language.trim().toLowerCase();
-          //  let courses_taught = request.body.contact_type.trim().toLowerCase();
-            
+            let location = request.body.location?.trim().toLowerCase();
+            let dob = request.body.dob?.trim().toLowerCase();
+            let preferred_language = request.body.preferred_language?.trim().toLowerCase();
+            let department = request.body.department?.trim().toLowerCase();
+
             try {
                 validateString(user_id, "user");
-                validateString(name, "name");
                 validateString(location, "location");
-                validateString(gender, "gender");
-                validateString(contact_type, "contact type");
                 validateDate(dob);
-                validateString(bio, "bio");
-                validateString(contact, "contact");
+                validateString(preferred_language, "preferred language");
+                validateString(department, "department");
             } catch (error) {
-                response.status(422).json({ message: error.message });
-                return;
+                return response.status(422).json({ message: error.message });
             }
-
+            
+        
             try {
                 await validateUserExist(this.#user_persistence, user_id);
             } catch (error) {
@@ -93,10 +89,9 @@ class InstructorHandler {
             let result = await this.#instructor_persistence.create_instructor(
                 user_id,
                 location,
-                availability,
                 dob,
-                preferred_language,
-                courses_taught
+                preferred_language, department
+             
             );
             return response.status(200).json({ message: "instructor created successfully" });
         } catch (error) {
@@ -115,22 +110,21 @@ class InstructorHandler {
             // Synchronous validation
             try {
                 validateString(user_id, "user");
-                if (location) validateString(location, "location");
-                if (dob) validateDate(dob);
-                if (preferred_language) validateString(preferred_language, "preferred language");
-                if (department) validateString(department, "department");
+                validateString(location, "location");
+                validateDate(dob);
+                validateString(preferred_language, "preferred language");
+                validateString(department, "department");
             } catch (error) {
                 return response.status(422).json({ message: error.message });
             }
-    
-            // Check if the user exists
+
             try {
                 await validateUserExist(this.#user_persistence, user_id);
             } catch (error) {
                 return response.status(404).json({ message: error.message });
             }
     
-            // Update instructor profile
+         
             let result = await this.#instructor_persistence.update_instructor(
                 user_id,
                 location,
@@ -177,7 +171,67 @@ class InstructorHandler {
         }
     }
     
+    async get_courses_taught(request, response) {
+        try {
+            let user_id = request.params.id.trim().toLowerCase();
+    
+            // Validate user_id
+            try {
+                validateString(user_id, "user");
+            } catch (error) {
+                return response.status(422).json({ message: error.message });
+            }
+    
+            // Check if user exists
+            try {
+                await validateUserExist(this.#user_persistence, user_id);
+            } catch (error) {
+                return response.status(404).json({ message: error.message });
+            }
+    
+            // Fetch courses taught
+            try {
+                let courses_taught = await this.#instructor_persistence.get_courses_taught(user_id);
+                return response.status(200).json({ courses_taught });
+            } catch (error) {
+                return response.status(404).json({ message: error.message });
+            }
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
 
+    async add_course(request, response) {
+        try {
+            let user_id = request.params.id.trim().toLowerCase();
+            let course_id = request.body.course_id.trim().toLowerCase();
+    
+            // Validate input
+            try {
+                validateString(user_id, "user");
+                validateString(course_id, "course");
+            } catch (error) {
+                return response.status(422).json({ message: error.message });
+            }
+    
+            // Check if user exists
+            try {
+                await validateUserExist(this.#user_persistence, user_id);
+            } catch (error) {
+                return response.status(404).json({ message: error.message });
+            }
+    
+            // Add course to instructor
+            try {
+                let result = await this.#instructor_persistence.add_course(user_id, course_id);
+                return response.status(result.status).json({ message: result.message });
+            } catch (error) {
+                return response.status(500).json({ message: error.message });
+            }
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
     
 }
 
