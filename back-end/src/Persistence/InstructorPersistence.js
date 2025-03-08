@@ -30,13 +30,13 @@ class InstructorPersistence {
         return this.#table_name;
     }
 
-    async create_instructor(user_ID, department, preferred_language, dob, location) {
+    async create_instructor(user_ID, location, preferred_language, dob, department) {
         try {
             // Add the new instructor profile
             const put_command = new PutCommand({
                 TableName: "Instructor",
                 Item: {
-                    user_ID: user_ID,
+                    user_id: user_ID,
                     department: department,
                     preferred_language: preferred_language,
                     dob: dob,
@@ -91,7 +91,7 @@ class InstructorPersistence {
         const get_command = new GetCommand({
             TableName: "Instructor",
             Key: {
-                user_ID: user_ID,
+                user_id: user_ID,
             },
         });
     

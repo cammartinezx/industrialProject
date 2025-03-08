@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, GetCommand, ScanCommand, UpdateCommand, PutCommand } = require("@aws-sdk/lib-dynamodb");
 require("dotenv").config();
 
 class CoursePersistence {
@@ -29,8 +29,34 @@ class CoursePersistence {
         return this.table_name;
     }
 
+    async create_course(course_id, title, course_description, instructor_id) {
+        try {
+            const put_command = new PutCommand({
+                TableName: this.table_name,
+                Item: {  // Use "Item" instead of "Key"
+                    course_id: course_id,
+                    title: title,
+                    description: course_description,
+                    instructor: instructor_id,
+                    student_list: [], // Initialize empty array if needed
+                    unit_list: [] // Initialize empty array if needed
+                },
+                ConditionExpression: "attribute_not_exists(course_id)",
+            });
+    
+            await this.#doc_client.send(put_command);
+            return { status: 200, message: "Course successfully created" };
+        } catch (error) {
+            if (error.name === "ConditionalCheckFailedException") {
+                return { status: 400, message: "This course already exists" };
+            } else {
+                throw error;
+            }
+        }
+    }
+    
+
     async get_course(course_id) {
-        console.log("luker");
         const get_command = new GetCommand({
             TableName: this.table_name,
             Key: {
@@ -40,7 +66,7 @@ class CoursePersistence {
         
         const response = await this.#doc_client.send(get_command);
         let course = response.Item;
-        if (student === undefined) {
+        if (course === undefined) {
             return null;
         } else {
             return course;

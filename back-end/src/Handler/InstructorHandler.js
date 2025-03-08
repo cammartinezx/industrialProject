@@ -77,7 +77,6 @@ class InstructorHandler {
             } catch (error) {
                 return response.status(422).json({ message: error.message });
             }
-            
         
             try {
                 await validateUserExist(this.#user_persistence, user_id);
@@ -86,13 +85,14 @@ class InstructorHandler {
                 return;
             }
 
-            let result = await this.#instructor_persistence.create_instructor(
+            await this.#instructor_persistence.create_instructor(
                 user_id,
                 location,
                 dob,
-                preferred_language, department
-             
+                preferred_language, 
+                department,
             );
+
             return response.status(200).json({ message: "instructor created successfully" });
         } catch (error) {
             return response.status(500).json({ message: error.message });

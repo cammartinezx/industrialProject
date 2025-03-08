@@ -4,6 +4,10 @@ const CourseHandler = require('../Handler/CourseHandler');
 
 const course_handler = new CourseHandler();
 
+router.post('/create-course', async (req, res) => {
+    course_handler.create_course(req, res);
+});
+
 router.get('/get-courses', async (req, res) => {
     course_handler.get_courses(req, res);
 });
