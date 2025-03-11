@@ -1,5 +1,6 @@
 const { GoogleAuth } = require("google-auth-library");
 const axios = require("axios");
+const path = require("path");
 const fs = require("fs");
 
 class ChatbotHandler {
@@ -8,12 +9,20 @@ class ChatbotHandler {
     }
 
     async getAccessToken() {
-        const keyPath = "../../back-end/ollama-backend/key.json";
+        const keyPath = path.resolve(__dirname, "../../ollama-backend/key.json");
+
+        // Check if the file exists
+        if (!fs.existsSync(keyPath)) {
+            throw new Error(`key.json not found at: ${keyPath}`);
+        }
+
         const targetAudience = 'https://ollama-gemma-219112529214.us-central1.run.app/';
     
         // Remove "scopes" when using target audience for ID tokens
         const auth = new GoogleAuth({
-            keyFile: keyPath
+            keyFile: keyPath,
+            // Explicitly specify credentials (optional but recommended)
+            credentials: require(keyPath)
         });
     
         const client = await auth.getClient();
