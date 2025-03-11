@@ -1,6 +1,27 @@
-const { spawn } = require("child_process");
+const { GoogleAuth } = require("google-auth-library");
+const axios = require("axios");
+const fs = require("fs");
 
 class ChatbotHandler {
+    constructor() {
+        this.previousQuestion = "";
+    }
+
+    async getAccessToken() {
+        const keyPath = "../../back-end/ollama-backend/key.json";
+        const targetAudience = 'https://ollama-gemma-219112529214.us-central1.run.app/';
+    
+        // Remove "scopes" when using target audience for ID tokens
+        const auth = new GoogleAuth({
+            keyFile: keyPath
+        });
+    
+        const client = await auth.getClient();
+        const idToken = await client.fetchIdToken(targetAudience);
+        return idToken;
+    }
+
+    // Rest of the ChatbotHandler class remains the same
     async chat(req, res) {
         try {
             const message = req.body.msg.trim();
@@ -9,23 +30,30 @@ class ChatbotHandler {
                 return res.status(400).json({ error: "Message is required" });
             }
 
-            // Run the Ollama CLI to get the response from Llama 3.2 8B model
-            const ollamaProcess = spawn("ollama", ["run", "llama3"], {
-                stdio: ["pipe", "pipe", "inherit"], // Pipe input/output
-            });
+            const idToken = await this.getAccessToken();
 
-            let responseText = "";
+            const headers = {
+                'Authorization': `Bearer ${idToken}`,
+                'Content-Type': 'application/json'
+            };
 
-            ollamaProcess.stdout.on("data", (data) => {
-                responseText += data.toString();
-            });
+            const prompt = this.previousQuestion ? `${this.previousQuestion}\n${message}` : message;
 
-            ollamaProcess.stdin.write(message + "\n");
-            ollamaProcess.stdin.end();
+            const response = await axios.post(
+                'https://ollama-gemma-219112529214.us-central1.run.app/api/generate',
+                {
+                    model: "gemma2:9b",
+                    prompt: prompt,
+                    stream: false
+                },
+                { headers }
+            );
 
-            ollamaProcess.on("close", () => {
-                res.json({ response: responseText.trim() });
-            });
+            const responseText = response.data.response;
+
+            this.previousQuestion = message;
+
+            res.json({ response: responseText.trim() });
         } catch (error) {
             console.error("Error in chatbot handler:", error);
             res.status(500).json({ error: "Internal Server Error" });
