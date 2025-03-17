@@ -1,7 +1,7 @@
 import {
   benefitIcon1,
-
-  benefitImage2,
+ 
+  cardbg,
   chromecast,
   disc02,
   discord,
@@ -33,6 +33,10 @@ import {
   twitter,
   yourlogo,
 } from "../assets";
+
+export const url = "http://localhost:3001/"
+
+export const backgroundUrl = "src/assets/course_cards/card-1.svg"
 
 export const navigation = [
   {
@@ -99,6 +103,49 @@ export const navigationStudent = [
   },
 ];
 
+export const navigationChatStudent = [
+  {
+    id: "0",
+    title: "Back to Course",
+    url: "/course",
+  },
+  
+  
+  {
+    id: "1",
+    title: "Unit 1",
+    url: "#features",
+  },
+
+  {
+    id: "2",
+    title: "Save Session",
+    url: "#login",
+
+  },
+];
+
+export const navigationCourseStudent = [
+  {
+    id: "0",
+    title: "Back to Course",
+    url: "/course",
+  },
+  
+  
+  {
+    id: "1",
+    title: "Unit 1",
+    url: "#features",
+  },
+
+  {
+    id: "2",
+    title: "Save Session",
+    url: "#login",
+
+  },
+];
 export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
 
 export const notificationImages = [notification4, notification3, notification2];
@@ -276,53 +323,22 @@ export const benefits = [
     id: "COMP3010",
     title: "Distributed Systems",
     text: "This course explores the principles and technologies behind distributed systems, focusing on network communication, synchronization, fault tolerance, and scalability.",
-    backgroundUrl: "src/assets/benefits/card-1.svg",
+    backgroundUrl: "src/assets/course_cards/card-1.svg",
     iconUrl: benefitIcon1,
-    imageUrl: benefitImage2,
+    imageUrl: cardbg,
   },
   {
     id: "ASTR1080",
     title: "Introduction to astronomy",
     text: "explore the fundamentals of astronomy, including the study of stars, planets, galaxies, and the universe's structure.",
-    backgroundUrl: "src/assets/benefits/card-2.svg",
+    backgroundUrl: "src/assets/course_cards/card-2.svg",
     iconUrl: benefitIcon1,
-    imageUrl: benefitImage2,
-    light: true,
+    imageUrl: cardbg,
   },
-  // {
-  //   id: "2",
-  //   title: "Conéctate desde cualquier lugar",
-  //   text: "Accede al chatbot de IA desde cualquier dispositivo y en cualquier lugar, haciéndolo más accesible y conveniente.",
-  //   backgroundUrl: "src/assets/benefits/card-3.svg",
-  //   iconUrl: benefitIcon3,
-  //   imageUrl: benefitImage2,
-  // },
-  // {
-  //   id: "3",
-  //   title: "Respuestas inmediatas",
-  //   text: "Obtén respuestas rápidamente sin tener que buscar en múltiples fuentes.",
-  //   backgroundUrl: "src/assets/benefits/card-4.svg",
-  //   iconUrl: benefitIcon4,
-  //   imageUrl: benefitImage2,
-  //   light: true,
-  // },
-  // {
-  //   id: "4",
-  //   title: "Pregunta lo que quieras",
-  //   text: "Encuentra respuestas al instante sin necesidad de explorar múltiples fuentes.",
-  //   backgroundUrl: "src/assets/benefits/card-5.svg",
-  //   iconUrl: benefitIcon1,
-  //   imageUrl: benefitImage2,
-  // },
-  // {
-  //   id: "5",
-  //   title: "Mejora constante",
-  //   text: "La app utiliza inteligencia artificial para comprender tus consultas y ofrecerte las mejores respuestas.",
-  //   backgroundUrl: "src/assets/benefits/card-6.svg",
-  //   iconUrl: benefitIcon2,
-  //   imageUrl: benefitImage2,
-  // },
+  
 ];
+
+
 
 export const socials = [
   {

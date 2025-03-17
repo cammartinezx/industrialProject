@@ -19,7 +19,7 @@ class UserPersistence {
 
         let working_client = new DynamoDBClient(remote_client);
         this.#doc_client = DynamoDBDocumentClient.from(working_client);
-        this.#table_name = "users";
+        this.#table_name = "User";
     }
 
     get_doc_client() {

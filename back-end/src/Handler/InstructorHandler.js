@@ -201,38 +201,7 @@ class InstructorHandler {
         }
     }
 
-    async add_course(request, response) {
-        try {
-            let user_id = request.params.id.trim().toLowerCase();
-            let course_id = request.body.course_id.trim().toLowerCase();
-    
-            // Validate input
-            try {
-                validateString(user_id, "user");
-                validateString(course_id, "course");
-            } catch (error) {
-                return response.status(422).json({ message: error.message });
-            }
-    
-            // Check if user exists
-            try {
-                await validateUserExist(this.#user_persistence, user_id);
-            } catch (error) {
-                return response.status(404).json({ message: error.message });
-            }
-    
-            // Add course to instructor
-            try {
-                let result = await this.#instructor_persistence.add_course(user_id, course_id);
-                return response.status(result.status).json({ message: result.message });
-            } catch (error) {
-                return response.status(500).json({ message: error.message });
-            }
-        } catch (error) {
-            return response.status(500).json({ message: error.message });
-        }
-    }
-    
+   
 }
 
 module.exports = InstructorHandler;

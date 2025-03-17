@@ -85,20 +85,6 @@ router.get("/:id/courses-taught", (req, res) => {
     instructor_handler.get_courses_taught(req, res);
 });
 
-/**
- * @memberof Instructor
- * @name Add a course to instructor's profile
- * @path {POST} /:id/add-course
- * @body {string} course_id: The unique identifier of the course to be added
- * @params {string} id: Unique identifier for the instructor
- * @code {200} Success message indicating the course was added
- * @code {422} Validation error message for invalid input data
- * @code {404} Error message if the instructor or course does not exist
- * @code {500} Internal server error message
- */
-router.post("/:id/add-course", (req, res) => {
-    instructor_handler.add_course(req, res);
-});
 
 router.use("/", (req, res) => {
     res.status(200).json({ Message: "Welcome to the Instructor paths" });

@@ -125,7 +125,7 @@ class StudentPersistence {
     
         const response = await this.#doc_client.send(get_command);
     
-        let courses_enrolled = response.Item?.courses_enrolled;
+        let courses_enrolled = response.Item.courses_enrolled;
         if (courses_enrolled === undefined) {
             courses_enrolled = [];
         }
@@ -134,29 +134,33 @@ class StudentPersistence {
     }
 
     async add_course(user_id, course_id) {
-        try{
-        const update_command = new UpdateCommand({
-            TableName: this.#table_name,
-            Key: { user_id: user_id },
-            UpdateExpression: "ADD #courses_enrolled :new_course",
-            ExpressionAttributeNames: {
-                "#courses_enrolled": "courses_enrolled", 
-            },
-            ExpressionAttributeValues: {
-                ":new_course": new Set([course_id]), // The course to add as a single-element list
-            },
-        });
-        await this.#doc_client.send(update_command);
-        return { status: 200, message: "course successfully added" };
-    }catch (error) {
-        if (error.name === "ConditionalCheckFailedException") {
-            return { status: 400, message: "User not found" };
-        } else {
-            throw error;
+        try {
+            const update_command = new UpdateCommand({
+                TableName: this.#table_name,
+                Key: { user_id: user_id },
+                UpdateExpression: "SET #courses_enrolled = list_append(if_not_exists(#courses_enrolled, :empty_list), :new_course)",
+                ExpressionAttributeNames: {
+                    "#courses_enrolled": "courses_enrolled",
+                },
+                ExpressionAttributeValues: {
+                    ":new_course": [course_id], // Wrap course_id in an array for appending
+                    ":empty_list": [], // Handle case where courses_enrolled doesn't exist
+                },
+                ConditionExpression: "attribute_exists(user_id)", // Ensure the user exists
+                ReturnValues: "NONE",
+            });
+    
+            await this.#doc_client.send(update_command);
+            return { status: 200, message: "Course successfully added" };
+        } catch (error) {
+            if (error.name === "ConditionalCheckFailedException") {
+                return { status: 400, message: "User not found" };
+            } else {
+                throw error;
+            }
         }
     }
-
-    }
+    
     
 }
 

@@ -57,23 +57,24 @@ import notification2 from "./notification/image-2.png";
 import notification3 from "./notification/image-3.png";
 import notification4 from "./notification/image-4.png";
 
-import benefitCard1 from "./benefits/card-1.svg";
-import benefitCard2 from "./benefits/card-2.svg";
-import benefitCard3 from "./benefits/card-3.svg";
-import benefitCard4 from "./benefits/card-4.svg";
-import benefitCard5 from "./benefits/card-5.svg";
-import benefitCard6 from "./benefits/card-6.svg";
-import benefitIcon1 from "./benefits/icon-1.svg";
-import benefitIcon2 from "./benefits/icon-2.svg";
-import benefitIcon3 from "./benefits/icon-3.svg";
-import benefitIcon4 from "./benefits/icon-4.svg";
-import cardbg from "./benefits/cards-bg.png";
-
+import benefitCard1 from "./course_cards/card-1.svg";
+import benefitCard2 from "./course_cards/card-2.svg";
+import benefitCard3 from "./course_cards/card-3.svg";
+import benefitCard4 from "./course_cards/card-4.svg";
+import benefitCard5 from "./course_cards/card-5.svg";
+import benefitCard6 from "./course_cards/card-6.svg";
+import benefitIcon1 from "./course_cards/icon-1.svg";
+import benefitIcon2 from "./course_cards/icon-2.svg";
+import benefitIcon3 from "./course_cards/icon-3.svg";
+import benefitIcon4 from "./course_cards/icon-4.svg";
+import cardbg from "./course_cards/cards-bg.png";
 import discordBlack from "./socials/discord.svg";
 import facebook from "./socials/facebook.svg";
 import instagram from "./socials/instagram.svg";
 import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
+import unitCard1 from "./unit_cards/unit-cards-1.svg";
+import unitCard2 from "./unit_cards/unit-cards-2.svg";
 
 export {
   edunova,
@@ -138,10 +139,12 @@ export {
   benefitIcon2,
   benefitIcon3,
   benefitIcon4,
-  cardbg as benefitImage2,
+  cardbg,
   discordBlack,
   facebook,
   instagram,
   telegram,
   twitter,
+  unitCard1, 
+  unitCard2 
 };

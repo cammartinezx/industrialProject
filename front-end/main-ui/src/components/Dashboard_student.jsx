@@ -1,6 +1,6 @@
 import Courses from "./Courses";
 import Header from "./Header";
-import HeaderStudent from "./HeaderStudent";
+import HeaderStudent from "./HeaderStudent.jsx";
 
 Courses;
 

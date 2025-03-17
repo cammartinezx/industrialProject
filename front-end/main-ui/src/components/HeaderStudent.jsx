@@ -66,7 +66,7 @@ const HeaderStudent = () => {
           <HamburgerMenu />
         </nav>
 
-        <Button className="hidden lg:flex" href="/dashboard_student">
+        <Button className="hidden lg:flex" href="/">
           Log Out
         </Button>
 
