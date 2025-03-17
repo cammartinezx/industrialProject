@@ -41,7 +41,7 @@ class Services {
         if (this.#course_persistence === null) {
             this.#course_persistence = new CoursePersistence();
         }
-        return this.#notification_persistence;
+        return this.#course_persistence;
     }
    
    
