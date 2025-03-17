@@ -8,8 +8,8 @@ router.post('/create-course', async (req, res) => {
     course_handler.create_course(req, res);
 });
 
-router.get('/get-courses', async (req, res) => {
-    course_handler.get_courses(req, res);
+router.get('/:id/get-course', async (req, res) => {
+    course_handler.get_course(req, res);
 });
 
 router.post('/add-student', async (req, res) => {

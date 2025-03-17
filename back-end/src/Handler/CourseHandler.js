@@ -77,10 +77,11 @@ class CourseHandler {
         }
     }
 
-    async get_courses(request, response) {
+    async get_course(request, response) {
         try {
-            const courses = await this.#course_persistence.get_courses();
-            response.status(200).json({ courses: courses });
+            let course_id = request.params.id.trim().toLowerCase();
+            const course = await this.#course_persistence.get_course(course_id);
+            response.status(200).json({course});
         } catch (error) {
             response.status(500).json({ message: error.message });
         }
