@@ -5,7 +5,7 @@ const fs = require("fs");
 
 class ChatbotHandler {
     constructor() {
-        this.previousQuestion = "";
+        this.conversationHistory = [];
     }
 
     async getAccessToken() {
@@ -30,7 +30,6 @@ class ChatbotHandler {
         return idToken;
     }
 
-    // Rest of the ChatbotHandler class remains the same
     async chat(req, res) {
         try {
             const message = req.body.msg.trim();
@@ -46,7 +45,11 @@ class ChatbotHandler {
                 'Content-Type': 'application/json'
             };
 
-            const prompt = this.previousQuestion ? `${this.previousQuestion}\n${message}` : message;
+            // Add the user's message to the conversation history
+            this.conversationHistory.push({ role: "user", content: message });
+
+            // Create the prompt using the entire conversation history
+            const prompt = this.conversationHistory.map(entry => `${entry.role}: ${entry.content}`).join("\n");
 
             const response = await axios.post(
                 'https://ollama-gemma-219112529214.us-central1.run.app/api/generate',
@@ -60,7 +63,8 @@ class ChatbotHandler {
 
             const responseText = response.data.response;
 
-            this.previousQuestion = message;
+            // Add the chatbot's response to the conversation history
+            this.conversationHistory.push({ role: "assistant", content: responseText.trim() });
 
             res.json({ response: responseText.trim() });
         } catch (error) {
