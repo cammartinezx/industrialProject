@@ -91,7 +91,7 @@ const Courses = () => {
               <div className="flex items-center mt-auto">
                 <img src={cardDesign[0]} width={48} height={48} alt={item.course.title} />
                 <Link
-                  to={`/course/${item.course.course_id}`}
+                  to={`/course`}
                   className="ml-auto font-code text-xs font-bold text-n-1 uppercase tracking-wider"
                 >
                   Continue
