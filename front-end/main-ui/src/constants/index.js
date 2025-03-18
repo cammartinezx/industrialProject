@@ -34,9 +34,9 @@ import {
   yourlogo,
 } from "../assets";
 
-export const url = "http://localhost:3001/"
+export const url = "http://localhost:3001"
 
-export const backgroundUrl = "src/assets/course_cards/card-1.svg"
+
 
 export const navigation = [
   {
@@ -317,6 +317,8 @@ export const pricing = [
     ],
   },
 ];
+
+export const cardDesign = [benefitIcon1, cardbg];
 
 export const benefits = [
   {
