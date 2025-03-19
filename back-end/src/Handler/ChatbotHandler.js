@@ -11,7 +11,7 @@ class ChatbotHandler {
     }
 
     loadKnowledgeBase() {
-        const markdownPath = path.resolve(__dirname, "../../ollama-backend/courses-data/comp-2280/week-1/1_representation.md");
+        const markdownPath = path.resolve(__dirname, "../../ollama-backend/courses-data/comp-2280/unit1_representation.md");
 
         if (!fs.existsSync(markdownPath)) {
             throw new Error(`Markdown file not found at: ${markdownPath}`);
