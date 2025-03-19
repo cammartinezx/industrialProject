@@ -1,15 +1,13 @@
-import Heading from "./Heading";
-import Section from "./Section";
-import {url, cardDesign } from "../constants";
-import Arrow from "../assets/svg/Arrow";
-import { GradientLight } from "./design/Benefits";
-import ClipPath from "../assets/svg/ClipPath";
-import Button from "./Button";
-import { cardbg,} from "../assets";
-import ButtonGradient from "../assets/svg/ButtonGradient";
+
+import {url, cardDesign } from "../../constants";
+import Arrow from "../../assets/svg/Arrow";
+import { GradientLight } from "../design/Benefits";
+import ClipPath from "../../assets/svg/ClipPath";
+import { cardbg,} from "../../assets";
 import { Link,  } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from 'axios';
+import Section from "../design/Section";
 
 /**
  * Fetch course details by course ID.

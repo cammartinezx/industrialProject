@@ -374,3 +374,27 @@ export const socials = [
     url: "#",
   },
 ];
+
+export const majors = [
+  "Computer Science",
+  "Electrical Engineering",
+  "Mechanical Engineering",
+  "Civil Engineering",
+  "Chemical Engineering",
+  "Data Science",
+  "Software Engineering",
+  "Information Technology",
+  "Business Administration",
+  "Marketing",
+  "Psychology",
+  "Economics",
+  "Physics",
+  "Mathematics",
+  "Biology",
+  "Environmental Science",
+  "Chemistry",
+  "Political Science",
+  "Sociology",
+  "Philosophy",
+  "Linguistics",
+];

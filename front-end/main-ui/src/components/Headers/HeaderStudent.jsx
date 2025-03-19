@@ -1,11 +1,15 @@
 import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import { edunova } from "../assets";
-import { navigationStudent } from "../constants";
-import Button from "./Button";
-import MenuSvg from "../assets/svg/MenuSvg";
-import { HamburgerMenu } from "./design/Header";
+
+
+
+import MenuSvg from "../../assets/svg/MenuSvg";
+
 import { useState } from "react";
+import { edunova } from "../../assets";
+import { navigationStudent } from "../../constants";
+import Button from "../design/Button";
+import { HamburgerMenu } from "../design/Header";
 
 const HeaderStudent = () => {
   const pathname = useLocation();

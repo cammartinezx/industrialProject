@@ -1,18 +1,16 @@
-import Heading from "./Heading";
-import Section from "./Section";
 
-import Arrow from "../assets/svg/Arrow";
-import { GradientLight } from "./design/Benefits";
-import ClipPath from "../assets/svg/ClipPath";
-import Button from "./Button";
-import ButtonGradient from "../assets/svg/ButtonGradient";
+
+import Arrow from "../../assets/svg/Arrow.jsx";
+
+
 import { Link } from "react-router-dom";
-import { cardbg, check } from "../assets";
-import HeaderStudent from "./HeaderStudent.jsx";
-import Services from "./Services";
+import { cardbg, check } from "../../assets/index.js";
+
+
 import axios from "axios";
-import { url } from "../constants/index.js";
+import { url } from "../../constants/index.js";
 import { useEffect, useState } from "react";
+import HeaderStudent from "../Headers/HeaderStudent.jsx";
 
 /**
  * Fetch course details by course ID.

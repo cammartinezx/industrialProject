@@ -1,4 +1,4 @@
-import { notification1 } from "../assets";
+import { notification1 } from "../../assets";
 
 const Notification = ({ className, title }) => {
   return (

@@ -1,7 +1,7 @@
 
-import HeaderChatStudent from "./headerChatStudent.jsx";
 
-import Hero from "./Hero";
+import HeaderChatStudent from "./Headers/HeaderChatStudent.jsx";
+
 import { useState } from "react";
 
 
