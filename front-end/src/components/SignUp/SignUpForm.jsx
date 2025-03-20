@@ -52,7 +52,7 @@ const parallaxRef = useRef(null);
       <div className="container justify-center items-center relative pt-[12rem] -mt-[7.25rem] " ref={parallaxRef} >
         
 
-     <div className="flex justify-center h-screen mb-20 center">
+     <div className="relative w-full min-h-screen flex justify-center items-center mb-15">
 
        
         <div className="z-1 p-0.5 rounded-2xl bg-conic-gradient max-w-lg w-full">
@@ -128,12 +128,14 @@ const parallaxRef = useRef(null);
           )}
         </div>
 
-        {/* Sign Up Button */}
-        <div className="flex justify-center mt-6">
-          <Button type="submit" white className="w-1/3 py-3" href="/student-signup">
-            Continue
-          </Button>
-        </div>
+        <Button 
+  type="submit" 
+  white 
+  className="w-1/3 py-3"
+  onClick={() => navigate(role === "student" ? "/student-signup" : "/instructor-signup")}
+>
+  Continue
+</Button>
 
         {/* Already have an account? */}
         <p className="text-sm text-center text-n-2 pt-4">

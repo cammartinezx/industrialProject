@@ -10,6 +10,7 @@ import Login from './components/Login/Login.jsx'
 import SignUp from './components/SignUp/SignUp.jsx'
 import StudentSignUp from './components/StudentSignUp/StudentSignUp.jsx'
 import App from './components/LandingPage/App.jsx'
+import InstructorSignUp from './components/InstructorSignUp.jsx/InstructorSignUp.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<App/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/instructor-signup" element={<InstructorSignUp />} />
         <Route path="/student-signup" element={<StudentSignUp />} />
         <Route path="/dashboard-student" element={<Dashboard_student />} />
         <Route path="/course" element={<CourseMain />} />

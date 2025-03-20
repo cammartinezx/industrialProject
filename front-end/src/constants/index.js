@@ -398,3 +398,34 @@ export const majors = [
   "Philosophy",
   "Linguistics",
 ];
+
+export const gpaOptions = [
+  { value: "less_than_2", label: "Less than 2" },
+  { value: "2_to_2_5", label: "2 to 2.5" },
+  { value: "2_5_to_3", label: "2.5 to 3" },
+  { value: "3_to_3_5", label: "3 to 3.5" },
+  { value: "3_5_to_4", label: "3.5 to 4" },
+  { value: "4_to_4_5", label: "4 to 4.5" },
+  { value: "4_5_plus", label: "4.5+" }
+];
+
+export const locationOptions = ["Toronto", "Vancouver", "Montreal", "Calgary", "Winnipeg"];
+
+export const languageOptions = ["English", "French"];
+
+export const learningStyleOptions = [
+  { value: "memorization", label: "Memorization" },
+  { value: "graphical", label: "Graphical" },
+  { value: "visual", label: "Visual" },
+  { value: "repetition", label: "Repetition" },
+  { value: "active_recall", label: "Active Recall" },
+  { value: "hands_on", label: "Hands-on Practice" },
+  { value: "auditory", label: "Auditory" }
+];
+
+export const getCourseDetails = (course) => [
+  { label: "Course Code", value: course?.course_id || "N/A" },
+  { label: "Instructor", value: course?.instructor || "N/A" },
+  { label: "Total Students", value: course?.size || "N/A" },
+  { label: "Enrolled On", value: "09/11/2024" }, // Static value
+];

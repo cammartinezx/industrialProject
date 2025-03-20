@@ -6,14 +6,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from "../design/Button";
-import { majors } from "../../constants";
+import { majors, languageOptions, locationOptions } from "../../constants";
 
-const StudentForm = () => {
+const InstructorForm = () => {
   const parallaxRef = useRef(null);
 
-  const [major, setMajor] = useState("");
+  const [department, setMajor] = useState("");
   const [dob, setDob] = useState("");
-  const [gpa, setGpa] = useState("");
   const [location, setLocation] = useState("");
   const [preferredLanguage, setPreferredLanguage] = useState("");
   const [error, setError] = useState(null);
@@ -22,16 +21,16 @@ const StudentForm = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (!major|| !dob || !gpa || !location || !preferredLanguage) {
+    if (!department|| !dob || !location || !preferredLanguage) {
       setError("All fields are required");
       return;
     }
 
     try {
       const response = await axios.post("https://your-api.com/signup", {
-       
+       department,
         dob,
-        gpa,
+      
         location,
         preferredLanguage,
      
@@ -51,8 +50,8 @@ const StudentForm = () => {
 
   return (
     <>
-      <div className="container justify-center items-center relative pt-[12rem] -mt-[7.25rem] mb-40" ref={parallaxRef}>
-        <div className="flex justify-center h-screen">
+      <div className="container justify-center items-center relative pt-[12rem] -mt-[7.25rem]" ref={parallaxRef}>
+        <div className="relative w-full min-h-screen flex justify-center items-center mb-15">
           <div className="z-1 p-0.5 rounded-2xl bg-conic-gradient max-w-lg w-full ">
             <div className="relative bg-n-8 rounded-[1rem]">
               <div className="w-full bg-n-4/30 p-10 rounded-lg shadow-md">
@@ -65,9 +64,9 @@ const StudentForm = () => {
                  
 
                   <div>
-                    <label className="block text-sm font-semibold pb-2">Major</label>
+                    <label className="block text-sm font-semibold pb-2">Department</label>
                     <select
-                      value={major}
+                      value={department}
                       onChange={(e) => setMajor(e.target.value)}
                       className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
                       required
@@ -93,64 +92,46 @@ const StudentForm = () => {
                     />
                   </div>
 
-                  {/* GPA */}
-                  <div>
-                    <label className="block text-sm font-semibold pb-2">GPA</label>
-                    <select
-                      value={gpa}
-                      onChange={(e) => setGpa(e.target.value)}
-                      className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
-                      required
-                    >
-                      <option value="" disabled></option>
-                      <option value="less_than_2">Less than 2</option>
-                      <option value="2_to_2_5">2 to 2.5</option>
-                      <option value="2_5_to_3">2.5 to 3</option>
-                      <option value="3_to_3_5">3 to 3.5</option>
-                      <option value="3_5_to_4">3.5 to 4</option>
-                      <option value="4_to_4_5">4 to 4.5</option>
-                      <option value="4_5_plus">4.5+</option>
-                    </select>
-                  </div>
+                
+    {/* Location */}
+    <div>
+      <label className="block text-sm font-semibold pb-2">Location</label>
+      <select
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
+        required
+      >
+        <option value="" disabled></option>
+        {locationOptions.map((city) => (
+          <option key={city} value={city}>
+            {city}
+          </option>
+        ))}
+      </select>
+    </div>
 
-                  {/* Location */}
-                  <div>
-                    <label className="block text-sm font-semibold pb-2">Location</label>
-                    <select
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
-                      required
-                    >
-                      <option value="" disabled></option>
-                      <option value="Toronto">Toronto</option>
-                      <option value="Vancouver">Vancouver</option>
-                      <option value="Montreal">Montreal</option>
-                      <option value="Calgary">Calgary</option>
-                      <option value="Winnipeg">Winnipeg</option>
-                    </select>
-                  </div>
-
-                  {/* Preferred Language */}
-                  <div>
-                    <label className="block text-sm font-semibold pb-2">Preferred Language</label>
-                    <select
-                      value={preferredLanguage}
-                      onChange={(e) => setPreferredLanguage(e.target.value)}
-                      className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 mb-16"
-                      required
-                    >
-                      <option value="" disabled></option>
-                      <option value="English">English</option>
-                      <option value="French">French</option>
-                    </select>
-                  </div>
-
-                 
+    {/* Preferred Language */}
+    <div>
+      <label className="block text-sm font-semibold pb-2">Preferred Language</label>
+      <select
+        value={preferredLanguage}
+        onChange={(e) => setPreferredLanguage(e.target.value)}
+        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 mb-16"
+        required
+      >
+        <option value="" disabled></option>
+        {languageOptions.map((language) => (
+          <option key={language} value={language}>
+            {language}
+          </option>
+        ))}
+      </select>
+    </div>
                   {/* Sign Up Button */}
                   <div className="flex justify-center mt-6">
                     <Button type="submit" white className="w-1/3 py-3" href={"/dashboard-student"}>
-                      Continue
+                      Sign Up
                     </Button>
                   </div>
 
@@ -170,4 +151,4 @@ const StudentForm = () => {
   );
 };
 
-export default StudentForm;
+export default InstructorForm;

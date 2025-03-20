@@ -1,4 +1,4 @@
-import Courses from "./Courses";
+import Courses from "./Courses.jsx";
 import Header from "../Headers/Header.jsx";
 import HeaderStudent from "../Headers/HeaderStudent.jsx";
 
