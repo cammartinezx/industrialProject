@@ -3,6 +3,7 @@ const InstructorPersistence = require('../Persistence/InstructorPersistence');
 const StudentPersistence = require('../Persistence/StudentPersistence');
 const NotificationPersistence = require('../Persistence/NotificationPersistence');
 const CoursePersistence = require('../Persistence/CoursePersistence');
+const ConversationPersistence = require('../Persistence/ConversationPersistence');
 
 class Services {
     static #user_persistence = null;
@@ -10,6 +11,7 @@ class Services {
     static #student_persistence = null;
     static #notification_persistence = null;
     static #course_persistence = null;
+    static #conversation_persistence = null;
     
 
     static get_user_persistence() {
@@ -42,6 +44,13 @@ class Services {
             this.#course_persistence = new CoursePersistence();
         }
         return this.#course_persistence;
+    }
+
+    static get_conversation_persistence() {
+        if (this.#conversation_persistence === null) {
+            this.#conversation_persistence = new ConversationPersistence();
+        }
+        return this.#conversation_persistence;
     }
    
    
