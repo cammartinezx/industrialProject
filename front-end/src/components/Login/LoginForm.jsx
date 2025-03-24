@@ -6,7 +6,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Section from "../design/Section";
+import { url } from "../../constants";
 const LoginForm = () => {
+
   const parallaxRef = useRef(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,17 +22,21 @@ const LoginForm = () => {
       setError("Both fields are required");
       return;
     }
-
     try {
-      const response = await axios.post("https://your-api.com/login", {
+      const response = await axios.post(`${url}/user/get-user`, {
         email,
         password,
       });
 
       // Assuming API returns a token or user data
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token); // Store token in localStorage
-        navigate("/dashboard_student"); // Redirect to dashboard
+
+        const { token, userId, role } = response.data;  
+        localStorage.setItem("token", token); 
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("role", role);
+
+        navigate("/dashboard", { state: {email, role } }); // Redirect to dashboard
       } else {
         setError("Invalid credentials");
       }
@@ -102,7 +108,7 @@ const LoginForm = () => {
 
         <div className="flex justify-center ">
           <Button href="/dashboard-student" white className="w-1/3 py-3">
-            Join Now
+            Log In
           </Button>
         </div>
 

@@ -1,11 +1,13 @@
 
 
-import HeaderChatStudent from "./Headers/HeaderChatStudent.jsx";
+
 
 import { useState } from "react";
+import HeaderStudent from "../components/Headers/HeaderChatStudent";
+import HeaderChatInstructor from "../components/Headers/HeaderChatInstructor";
 
 
-const ChatStudent = () => {
+const ChatInstructor = () => {
 
 
   const [messages, setMessages] = useState([]);
@@ -32,7 +34,7 @@ const ChatStudent = () => {
   return (
     <>
       <div className="h-screen flex flex-col pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden">
-       <HeaderChatStudent/>
+       <HeaderChatInstructor/>
 
         {/* Chat messages */}
         <div className="flex-1 p-4 overflow-y-auto">
@@ -81,67 +83,5 @@ const ChatStudent = () => {
 };
 
 
- export default ChatStudent;
+ export default ChatInstructor;
 
-
-
-//   return (
-//     <div className={`${styles.container} ${darkMode ? styles.darkMode : ""}`}>
-//       <Header />
-
-//       {/* Toggle for light/dark mode */}
-//       <div className={styles.toggleContainer}>
-//         <label className={styles.switch}>
-//           <input
-//             type="checkbox"
-//             checked={darkMode}
-//             onChange={() => setDarkMode(!darkMode)}
-//           />
-//           <span className={styles.slider}></span>
-//         </label>
-//         <span className={styles.toggleLabel}>
-//           {darkMode ? "Dark Mode" : "Light Mode"}
-//         </span>
-//       </div>
-
-//       <div className={styles.chatContainer}>
-//         <div className={styles.messages}>
-//           {/* Render existing messages */}
-//           {messages.map((msg, idx) => (
-//             <div
-//               key={idx}
-//               className={
-//                 msg.sender === "user" ? styles.userMessage : styles.aiMessage
-//               }
-//             >
-//               {msg.text}
-//             </div>
-//           ))}
-
-//           {/* 4) If chatbot is typing, show a typing indicator */}
-//           {isTyping && (
-//             <div className={styles.typingIndicator}>
-//               <div className={styles.spinner} />
-//               <span>Chatbot is thinking...</span>
-//             </div>
-//           )}
-//         </div>
-
-//         {/* Input area */}
-//         <div className={styles.inputContainer}>
-//           <input
-//             type="text"
-//             value={input}
-//             onChange={(e) => setInput(e.target.value)}
-//             onKeyDown={handleKeyDown}
-//             placeholder="Type a message..."
-//             className={styles.input}
-//           />
-//           <button onClick={sendMessage} className={styles.sendButton}>
-//             Send
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };

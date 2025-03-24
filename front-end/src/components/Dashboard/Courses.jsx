@@ -25,18 +25,27 @@ export const fetchCourseById = async (courseId) => {
 };
 
 const Courses = () => {
-  const user_id = "e621452d-5e7f-4809-8425-0fbe0b6ee147";
+  const userId = location.state?.userId || localStorage.getItem("userId");
+  const role = location.state?.role || localStorage.getItem("role");
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
-    if (user_id) {
+    if (userId) {
       const fetchCourses = async () => {
         try {
           setLoading(true);
-          const response = await axios.get(`${url}/student/${user_id}/courses`);
-          const courseIds = response.data.courses_enrolled || [];
+          let response, courseIds;
+    
+          if (role === "instructor") {
+            response = await axios.get(`${url}/instructor/${userId}/courses-taught`);
+            courseIds = response.data.courses_enrolled || [];
+          } else {
+            response = await axios.get(`${url}/student/${userId}/courses`);
+           courseIds = response.data.courses_taught|| [];
+          }
           const coursePromises = courseIds.map((id) => fetchCourseById(id));
           const detailedCourses = await Promise.all(coursePromises);
           setCourses(detailedCourses);
@@ -49,9 +58,14 @@ const Courses = () => {
       };
       fetchCourses();
     }
-  }, [user_id]);
+  }, [userId, role]);
 
-  let content;
+  let content, nextPage;
+  if (role === "instructor") {
+    nextPage=`/course`;
+   } else {
+     nextPage=`/manage-course`;
+   }
 
   if (loading) {
     content = (
@@ -89,11 +103,11 @@ const Courses = () => {
               <div className="flex items-center mt-auto">
                 <img src={cardDesign[0]} width={48} height={48} alt={item.course.title} />
                 <Link
-                  to={`/course`}
-                  className="ml-auto font-code text-xs font-bold text-n-1 uppercase tracking-wider"
-                >
-                  Continue
-                </Link>
+          to={`${nextPage}/${item.course_id}`}  // Updated this line
+          className="ml-auto font-code text-xs font-bold text-n-1 uppercase tracking-wider"
+        >
+          Continue
+        </Link>
                 <Arrow />
               </div>
             </div>

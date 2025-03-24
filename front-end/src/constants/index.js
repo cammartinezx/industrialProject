@@ -425,7 +425,37 @@ export const learningStyleOptions = [
 
 export const getCourseDetails = (course) => [
   { label: "Course Code", value: course?.course_id || "N/A" },
-  { label: "Instructor", value: course?.instructor || "N/A" },
   { label: "Total Students", value: course?.size || "N/A" },
-  { label: "Enrolled On", value: "09/11/2024" }, // Static value
+  //{ label: "Enrolled On", value: "09/11/2024" }, // Static value
+];
+
+export const sampleCourse = {
+  title: "Introduction to Artificial Intelligence",
+  description: "Learn the fundamentals of AI, machine learning, and neural networks.",
+  course_id: "AI101",
+  instructor: "Dr. John Doe",
+
+};
+
+export const classList = [
+  { name: "John Doe", id: "student_1" },
+  { name: "Jane Smith", id: "student_2" },
+  { name: "Michael Johnson", id: "student_3" },
+];
+
+export const navigationInstructor = [
+  {
+    id: "0",
+    title: "Dashboard",
+    url: "#features",
+  },
+  
+  {
+    id: "2",
+    title: "Profile",
+    url: "#how-to-use",
+  },
+ 
+
+  
 ];

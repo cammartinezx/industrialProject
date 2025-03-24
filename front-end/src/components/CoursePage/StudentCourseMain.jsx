@@ -30,7 +30,7 @@ export const fetchCourseById = async (courseId) => {
 
 
 
-  const CourseMain = () => {
+  const StudentCourseMain = () => {
     const courseId = "stat3000";
     const [course, setCourse] = useState(null);
     const [units, setUnits] = useState([]);
@@ -128,4 +128,4 @@ export const fetchCourseById = async (courseId) => {
     );
   };
   
-  export default CourseMain;
+  export default StudentCourseMain;
