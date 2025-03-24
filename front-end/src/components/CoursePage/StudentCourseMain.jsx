@@ -3,7 +3,7 @@
 import Arrow from "../../assets/svg/Arrow.jsx";
 
 
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { cardbg, check } from "../../assets/index.js";
 
 
@@ -31,7 +31,7 @@ export const fetchCourseById = async (courseId) => {
 
 
   const StudentCourseMain = () => {
-    const courseId = "stat3000";
+    const { courseId } = useParams(); 
     const [course, setCourse] = useState(null);
     const [units, setUnits] = useState([]);
     const [loading, setLoading] = useState(true);

@@ -8,7 +8,8 @@ import HeaderChatInstructor from "../components/Headers/HeaderChatInstructor";
 
 
 const ChatInstructor = () => {
-
+    //const { courseId } = useParams(); 
+  //const userId = location.state?.userId || localStorage.getItem("userId");
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
