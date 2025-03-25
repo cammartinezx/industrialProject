@@ -1,4 +1,3 @@
-const e = require('express');
 const Services = require('../Utility/Services');
 const { validateString } = require('../Utility/validator');
 
