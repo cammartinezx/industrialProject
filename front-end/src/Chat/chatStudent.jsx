@@ -1,9 +1,12 @@
 
 
 //import { useParams } from "react-router-dom";
+import axios from "axios";
+import HeaderChatStudent from "../components/Headers/HeaderChatStudent";
 import HeaderStudent from "../components/Headers/HeaderChatStudent";
 
 import { useState } from "react";
+import { url } from "../constants";
 
 
 const ChatStudent = () => {
@@ -13,20 +16,36 @@ const ChatStudent = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!input.trim()) return;
+  
+    // Add user message to the chat
     setMessages([...messages, { sender: "user", text: input }]);
     setInput("");
     setIsTyping(true);
-
-    setTimeout(() => {
+  
+    try {
+      // Send the message to the backend (where the chat function is handled)
+      const response = await axios.post(`${url}/chatbot/ask`, {
+        msg: input, // Send the user's message
+      });
+  
+      // Get the chatbot's response and update the chat
       setMessages((prev) => [
         ...prev,
-        { sender: "ai", text: "Hello! How can I help you?" },
+        { sender: "ai", text: response.data.response || "No response" },
       ]);
+    } catch (error) {
+      console.error("Error communicating with chatbot:", error);
+      setMessages((prev) => [
+        ...prev,
+        { sender: "ai", text: "Error: Failed to communicate with chatbot." },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
+  
 
   
 
