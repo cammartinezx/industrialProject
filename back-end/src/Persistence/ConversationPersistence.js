@@ -30,7 +30,7 @@ class ConversationPersistence {
         return this.#table_name;
     }
 
-    async add_message(conversation_id, timestamp, user_role, message, edited_by, original_message, unit) {
+    async add_message(conversation_id, timestamp, user_role, message, edited_by, original_message, unit, user_id, course_id) {
         try {
             // add the new message
             const put_command = new PutCommand({
@@ -43,6 +43,8 @@ class ConversationPersistence {
                     edited_by: edited_by,
                     original_message: original_message,
                     unit: unit,
+                    user_id: user_id,
+                    course_id: course_id,
                 },
             });
             await this.#doc_client.send(put_command);
@@ -53,7 +55,7 @@ class ConversationPersistence {
         }
     }
 
-    async update_message(conversation_id, timestamp, new_message, edited_by) {
+    async update_message(conversation_id, timestamp, new_message, edited_by, course_id) {
         try {
             // Retrieve the current message to set it as the original message
             const get_command = new GetCommand({
@@ -71,7 +73,7 @@ class ConversationPersistence {
                 Key: {
                     conversation_id: conversation_id,
                 },
-                UpdateExpression: "SET #msg = :new_message, edited_by = :edited_by, #ts = :timestamp, original_message = :original_message",
+                UpdateExpression: "SET #msg = :new_message, edited_by = :edited_by, #ts = :timestamp, original_message = :original_message, course_id = :course_id",
                 ExpressionAttributeNames: {
                     "#msg": "message",
                     "#ts": "timestamp"
@@ -81,6 +83,7 @@ class ConversationPersistence {
                     ":edited_by": edited_by,
                     ":timestamp": timestamp,
                     ":original_message": current_message,
+                    ":course_id": course_id,
                 },
             });
             await this.#doc_client.send(update_command);
@@ -91,16 +94,18 @@ class ConversationPersistence {
         }
     }
 
-    async get_conversation(unit) {
+    async get_conversation(course_id, unit) {
         try {
             const scan_command = new ScanCommand({
                 TableName: this.#table_name,
-                FilterExpression: "#unit = :unit",
+                FilterExpression: "#unit = :unit AND #course_id = :course_id",
                 ExpressionAttributeNames: {
-                    "#unit": "unit"
+                    "#unit": "unit",
+                    "#course_id": "course_id",
                 },
                 ExpressionAttributeValues: {
-                    ":unit": unit
+                    ":unit": unit,
+                    ":course_id": course_id,
                 }
             });
             const response = await this.#doc_client.send(scan_command);

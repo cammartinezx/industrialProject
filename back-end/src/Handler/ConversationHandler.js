@@ -24,10 +24,13 @@ class ConversationHandler {
             const edited_by = request.body.edited_by || null;
             const original_message = request.body.original_message || null;
             const unit = request.body.unit.trim();
+            const user_id = request.body.user_id || null;
+            const course_id = request.body.course_id.trim();
 
-            if (edited_by !== null || original_message !== null) {
+            if (edited_by !== null || original_message !== null || user_id !== null) {
                 edited_by = edited_by.trim();
                 original_message = original_message.trim();
+                user_id = user_id.trim();
             }
 
             try {
@@ -37,7 +40,7 @@ class ConversationHandler {
                 return;
             }
 
-            const result = await this.#conversation_persistence.add_message(conversation_id, timestamp, user_role, message, edited_by, original_message, unit);
+            const result = await this.#conversation_persistence.add_message(conversation_id, timestamp, user_role, message, edited_by, original_message, unit, user_id, course_id);
             response.status(result.status).json({ message: result.message });
         } catch (error) {
             response.status(500).json({ message: error.message });
@@ -50,6 +53,7 @@ class ConversationHandler {
             const timestamp = this.getCanadianTimestamp();
             const message = request.body.message.trim();
             const edited_by = request.body.edited_by.trim();
+            const course_id = request.body.course_id.trim();
 
             try {
                 validateString(message);
@@ -59,7 +63,7 @@ class ConversationHandler {
                 return;
             }
 
-            const result = await this.#conversation_persistence.update_message(conversation_id, timestamp, message, edited_by);
+            const result = await this.#conversation_persistence.update_message(conversation_id, timestamp, message, edited_by, course_id);
             response.status(result.status).json({ message: result.message });
         } catch (error) {
             response.status(500).json({ message: error.message });
@@ -68,8 +72,9 @@ class ConversationHandler {
 
     async get_conversation(request, response) {
         try {
+            const course_id = request.body.course_id.trim();
             const unit = request.body.unit.trim()
-            const result = await this.#conversation_persistence.get_conversation(unit);
+            const result = await this.#conversation_persistence.get_conversation(course_id, unit);
             response.status(result.status).json(result);
         } catch (error) {
             response.status(500).json({ message: error.message });
