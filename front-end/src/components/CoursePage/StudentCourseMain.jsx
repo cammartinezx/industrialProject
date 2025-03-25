@@ -26,6 +26,21 @@ export const fetchCourseById = async (courseId) => {
     throw new Error('Failed to fetch course details');
   }
 };
+/**
+ * Fetch the user's name by email.
+ * @param {string} user_id - The email of the user to fetch the name.
+ * @returns {Promise<string>} - The user's name if successful.
+ */
+export const fetchName = async (user_id) => {
+  try {
+    const response = await axios.post(`${url}/user/get-name`, { user_id: user_id });
+    return response.data;  
+  } catch (error) {
+    console.error("Error fetching user name:", error);
+    throw new Error("Failed to fetch user name");
+  }
+};
+
 
 
 
@@ -36,6 +51,8 @@ export const fetchCourseById = async (courseId) => {
     const [units, setUnits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [instructor, setInstructor] = useState("");
+
   
     useEffect(() => {
       const fetchCourse = async () => {
@@ -43,6 +60,8 @@ export const fetchCourseById = async (courseId) => {
           setLoading(true);
           const response = await fetchCourseById(courseId);
           setCourse(response.course);
+          const user = await fetchName(response.course.instructor);
+          setInstructor(user.name);
           setUnits(response.course.unit_list || []);
         } catch (err) {
           setError("Error fetching course details");
@@ -76,7 +95,7 @@ export const fetchCourseById = async (courseId) => {
             <li className="flex items-center py-4 border-t border-b border-n-6 flex-grow">
               <img width={24} height={24} src={check} alt="check" />
               <p className="ml-4">
-                <span className="font-semibold">Instructor:</span> {course?.instructor}
+                <span className="font-semibold">Instructor:</span> {instructor}
               </p>
             </li>
             <li className="flex items-center py-4 border-t border-b border-n-6 flex-grow">
@@ -108,7 +127,7 @@ export const fetchCourseById = async (courseId) => {
                     <span className="ml-3">{unit}</span>
                   </h5>
                   <div className="flex items-center space-x-2">
-                    <Link to="/chat" className="z-50">
+                    <Link to={`/chat/${courseId}`} className="z-50">
                       Start chat
                     </Link>
                     <Arrow className="w-6 h-6 text-white" />

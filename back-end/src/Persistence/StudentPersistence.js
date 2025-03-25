@@ -127,7 +127,7 @@ class StudentPersistence {
     
         let courses_enrolled = response.Item.courses_enrolled;
         if (courses_enrolled === undefined) {
-            courses_enrolled = [];
+            throw new Error("You are not enrolled in any course assigned yet");
         }
     
         return courses_enrolled;

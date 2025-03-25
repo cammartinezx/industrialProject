@@ -19,7 +19,7 @@ class InstructorPersistence {
 
         let working_client = new DynamoDBClient(remote_client);
         this.#doc_client = DynamoDBDocumentClient.from(working_client);
-        this.#table_name = "instructor";
+        this.#table_name = "Instructor";
     }
 
     get_doc_client() {
@@ -30,19 +30,20 @@ class InstructorPersistence {
         return this.#table_name;
     }
 
-    async create_instructor(user_ID, location, preferred_language, dob, department) {
+    async create_instructor(user_id, location, preferred_language, dob, department) {
         try {
+            console.log("valid 3");
             // Add the new instructor profile
             const put_command = new PutCommand({
                 TableName: "Instructor",
                 Item: {
-                    user_id: user_ID,
+                    user_id: user_id,
                     department: department,
-                    preferred_language: preferred_language,
                     dob: dob,
                     location: location,
+                    preferred_language: preferred_language,
                 },
-                ConditionExpression: "attribute_not_exists(user_ID)",
+                ConditionExpression: "attribute_not_exists(user_id)",
             });
     
             await this.#doc_client.send(put_command);
@@ -55,11 +56,11 @@ class InstructorPersistence {
             }
         }
     }
-    async update_instructor(user_ID, department, preferred_language, dob, location) {
+    async update_instructor(user_id, department, preferred_language, dob, location) {
         const update_command = new UpdateCommand({
             TableName: "Instructor",
             Key: {
-                user_ID: user_ID, // Partition key for the table
+                user_id: user_id, // Partition key for the table
             },
             UpdateExpression: `
                 set department = :department, 
@@ -73,7 +74,7 @@ class InstructorPersistence {
                 ":dob": dob,
                 ":location": location,
             },
-            ConditionExpression: "attribute_exists(user_ID)", // Ensure the instructor exists
+            ConditionExpression: "attribute_exists(user_id)", // Ensure the instructor exists
         });
     
         try {
@@ -103,15 +104,16 @@ class InstructorPersistence {
             return profile;
         }
     }
-    async get_courses_taught(user_ID) {
+    async get_courses_taught(user_id) {
         const get_command = new GetCommand({
             TableName: "Instructor",
             Key: {
-                user_ID: user_ID,
+                user_id: user_id,
             },
         });
 
         const response = await this.#doc_client.send(get_command);
+        
 
         let courses_taught = response.Item?.courses_taught;
         if (courses_taught===undefined) {

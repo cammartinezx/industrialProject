@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from "../design/Button";
+import { url } from "../../constants";
 const SignUpForm = () => {
 const parallaxRef = useRef(null);
   const [email, setEmail] = useState("");
@@ -18,34 +19,38 @@ const parallaxRef = useRef(null);
 
 
   const handleSignUp = async (e) => {
-    
     e.preventDefault();
 
-    if (!email || !password) {
-      setError("Both fields are required");
+    if (!email || !password || !role || !name) {
+      setError("All fields are required");
       return;
     }
-
     try {
-      const response = await axios.post("https://your-api.com/login", {
+      const response = await axios.post(`${url}/user/add-user`, {
         email,
-        password,
+        name,
+        role
       });
 
-      // Assuming API returns a token or user data
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token); // Store token in localStorage
-        navigate("/dashboard_student"); // Redirect to dashboard
-      } else {
-        setError("Invalid credentials");
+      if (response.status === 200) {
+        const {userId} = response.data; 
+        console.log(userId);
+        localStorage.setItem("name", name) 
+        //localStorage.setItem("token", token); 
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("role", role);
+
+
+        navigate(role === "student" ? "/student-signup" : "/instructor-signup")
+      }else{
+        setError("Failed to Sign Up");
       }
+      
     } catch (err) {
-      setError("Failed to login");
+      setError("Failed to Sign Up");
       console.error(err);
     }
   };
-
-
   return (
     <
     >
@@ -132,7 +137,7 @@ const parallaxRef = useRef(null);
   type="submit" 
   white 
   className="w-1/3 py-3"
-  onClick={() => navigate(role === "student" ? "/student-signup" : "/instructor-signup")}
+ 
 >
   Continue
 </Button>

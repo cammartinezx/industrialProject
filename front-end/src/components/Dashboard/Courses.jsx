@@ -41,16 +41,22 @@ const Courses = () => {
     
           if (role === "instructor") {
             response = await axios.get(`${url}/instructor/${userId}/courses-taught`);
-            courseIds = response.data.courses_enrolled || [];
+            courseIds = response.data.courses_taught;
+    
           } else {
             response = await axios.get(`${url}/student/${userId}/courses`);
-           courseIds = response.data.courses_taught|| [];
+            courseIds = response.data.courses_enrolled;
+           
           }
+         
           const coursePromises = courseIds.map((id) => fetchCourseById(id));
           const detailedCourses = await Promise.all(coursePromises);
+          console.log(detailedCourses);
           setCourses(detailedCourses);
+          
         } catch (error) {
-          setError('Error fetching courses');
+          const errorMessage = error.response?.data?.message || "Error fetching courses";
+          setError(errorMessage);
           console.error(error);
         } finally {
           setLoading(false);
@@ -62,9 +68,9 @@ const Courses = () => {
 
   let content, nextPage;
   if (role === "instructor") {
-    nextPage=`/course`;
+    nextPage=`/manage-course`;
    } else {
-     nextPage=`/manage-course`;
+     nextPage=`/course`;
    }
 
   if (loading) {
@@ -79,22 +85,22 @@ const Courses = () => {
         <p className="text-xl text-red-500 text-center">{error}</p>
       </div>
     );
-  } else if (courses.length === 0) {
-    content = (
-      <div className="flex justify-center items-center h-64">
-        <p className="text-xl text-gray-500 text-center">
-          You are currently not enrolled in any courses.
-        </p>
-      </div>
-    );
+  // } else if (courses.length === 0) {
+  //   content = (
+  //     <div className="flex justify-center items-center h-64">
+  //       <p className="text-xl text-gray-500 text-center">
+  //         You are currently not enrolled in any courses.
+  //       </p>
+  //     </div>
+  //   );
   } else {
     content = (
-      <div className="flex flex-wrap gap-10 mb-10">
+      <div className="flex flex-wrap gap-10 mb-10n">
         {courses.map((item) => (
           <div
             className="group block relative p-5 bg-no-repeat bg-[length:100%_100%] md:max-w-[24rem]"
             style={{ backgroundImage: `url(${cardDesign[1]})` }}
-            key={item.course_id}
+            key={item.course.course_id}
           >
             <div className="relative z-2 flex flex-col min-h-[22rem]">
               <h5 className="h5 mt-8 mb-5">{item.course.title || 'Course Title'}</h5>
@@ -103,7 +109,7 @@ const Courses = () => {
               <div className="flex items-center mt-auto">
                 <img src={cardDesign[0]} width={48} height={48} alt={item.course.title} />
                 <Link
-          to={`${nextPage}/${item.course_id}`}  // Updated this line
+          to={`${nextPage}/${item.course.course_id}`}  // Updated this line
           className="ml-auto font-code text-xs font-bold text-n-1 uppercase tracking-wider"
         >
           Continue

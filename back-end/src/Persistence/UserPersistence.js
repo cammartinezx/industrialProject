@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
 require("dotenv").config();
 
 class UserPersistence {
@@ -44,7 +44,19 @@ class UserPersistence {
                 ConditionExpression: "attribute_not_exists(email)",
             });
             await this.#doc_client.send(put_command);
-            return { status: 200, message: "User Successfully created" };
+            const get_command = new GetCommand({
+                TableName: "User",
+                Key: {
+                    user_id: user_id // Get the user by the user_id
+                }
+            });
+    
+            const response = await this.#doc_client.send(get_command);
+            const createdUser = response.Item;
+    
+            // Return success status and the user data
+            return { status: 200, message: "User Successfully created", data: createdUser };
+
         } catch (error) {
             console.error(error);
             if (error.code === "ConditionalCheckFailedException") {
@@ -57,27 +69,49 @@ class UserPersistence {
 
 
     async get_user(user_id) {
-        try {
+    
             const get_command = new GetCommand({
                 TableName: "User",
                 Key: {
-                    user_id: user_id,
-                },
+                    user_id: user_id // Get the user by the user_id
+                }
             });
+    
             const response = await this.#doc_client.send(get_command);
-            
-            let user = response.Item;
 
-            if (user === undefined) {
-                return null;
-            } else {
-                return response.Item;
-            }
-        } catch (error) {
-            console.error(error);
+        let user = response.Item;
+
+        if (user === undefined) {
             return null;
+        } else {
+            return response.Item;
         }
     }
+
+    async get_user_by_email(email) {
+        try {
+            
+            const queryCommand = new QueryCommand({
+                TableName: "User",
+                IndexName: "email-index",  // Use the GSI
+                KeyConditionExpression: "email = :emailValue",
+                ExpressionAttributeValues: {
+                    ":emailValue": email
+                },
+               
+            });
+           
+            const response = await this.#doc_client.send(queryCommand);
+            //console.log(response);
+            return response.Items.length > 0 ? response.Items[0] : null;
+        } catch (error) {
+            //console.log(error);
+    
+        return { status: 500, message: "Internal server error" };
+    
+        }
+    }
+  
 }
 
 module.exports = UserPersistence;

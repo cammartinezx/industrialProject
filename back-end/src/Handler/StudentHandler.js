@@ -193,7 +193,7 @@ class StudentHandler {
                 return response.status(422).json({ message: error.message });
             }
             try {
-              //  await validateUserExist(this.#user_persistence, user_id);
+               await validateUserExist(this.#user_persistence, user_id);
             } catch (error) {
                 return response.status(404).json({ message: error.message });
             }

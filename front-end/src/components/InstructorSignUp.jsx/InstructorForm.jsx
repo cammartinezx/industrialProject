@@ -3,42 +3,43 @@ import { heroBackground } from "../../assets";
 import { BackgroundCircles } from "../design/Hero";
 import { useRef } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from "../design/Button";
-import { majors, languageOptions, locationOptions } from "../../constants";
+import { majors, languageOptions, locationOptions, url } from "../../constants";
 
 const InstructorForm = () => {
   const parallaxRef = useRef(null);
-
+  const location = useLocation();
+  const userId = location.state?.userId || localStorage.getItem("userId");
+  const role = location.state?.role || localStorage.getItem("role");
   const [department, setMajor] = useState("");
   const [dob, setDob] = useState("");
-  const [location, setLocation] = useState("");
-  const [preferredLanguage, setPreferredLanguage] = useState("");
+  const [city, setCity] = useState("");
+  const [preferred_language, setPreferredLanguage] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (!department|| !dob || !location || !preferredLanguage) {
+    if (!department|| !dob || !city || !preferred_language) {
       setError("All fields are required");
       return;
     }
-
     try {
-      const response = await axios.post("https://your-api.com/signup", {
-       department,
+      const response = await axios.post(`${url}/instructor/${userId}/create-instructor`, {
+        department,
         dob,
-      
-        location,
-        preferredLanguage,
+        city,
+        preferred_language,
      
       });
-
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token); // Store token in localStorage
-        navigate("/dashboard_student"); // Redirect to dashboard
+      console.log(response);
+      if (response.status === 200) {
+        
+        alert('Your account has been created');
+        navigate("/dashboard",{ state: {userId, role } }); // Redirect to dashboard
       } else {
         setError("Failed to sign up");
       }
@@ -97,8 +98,8 @@ const InstructorForm = () => {
     <div>
       <label className="block text-sm font-semibold pb-2">Location</label>
       <select
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
         className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
         required
       >
@@ -115,7 +116,7 @@ const InstructorForm = () => {
     <div>
       <label className="block text-sm font-semibold pb-2">Preferred Language</label>
       <select
-        value={preferredLanguage}
+        value={preferred_language}
         onChange={(e) => setPreferredLanguage(e.target.value)}
         className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 mb-16"
         required
@@ -130,7 +131,7 @@ const InstructorForm = () => {
     </div>
                   {/* Sign Up Button */}
                   <div className="flex justify-center mt-6">
-                    <Button type="submit" white className="w-1/3 py-3" href={"/dashboard-student"}>
+                    <Button type="submit" white className="w-1/3 py-3">
                       Sign Up
                     </Button>
                   </div>

@@ -4,7 +4,6 @@ const {
     validateString,
     validateDate,
     validateUserExist,
-    validateNonEmptyList,
 } = require("../Utility/validator");
 
 /**
@@ -63,7 +62,7 @@ class InstructorHandler {
     async create_instructor(request, response) {
         try {
             let user_id = request.params.id.trim().toLowerCase();
-            let location = request.body.location?.trim().toLowerCase();
+            let location = request.body.city?.trim().toLowerCase();
             let dob = request.body.dob?.trim().toLowerCase();
             let preferred_language = request.body.preferred_language?.trim().toLowerCase();
             let department = request.body.department?.trim().toLowerCase();
@@ -77,6 +76,7 @@ class InstructorHandler {
             } catch (error) {
                 return response.status(422).json({ message: error.message });
             }
+            
         
             try {
                 await validateUserExist(this.#user_persistence, user_id);
@@ -84,6 +84,7 @@ class InstructorHandler {
                 response.status(404).json({ message: error.message });
                 return;
             }
+         
 
             await this.#instructor_persistence.create_instructor(
                 user_id,
@@ -185,11 +186,12 @@ class InstructorHandler {
             // Check if user exists
             try {
                 await validateUserExist(this.#user_persistence, user_id);
+                
             } catch (error) {
                 return response.status(404).json({ message: error.message });
             }
+      
     
-            // Fetch courses taught
             try {
                 let courses_taught = await this.#instructor_persistence.get_courses_taught(user_id);
                 return response.status(200).json({ courses_taught });

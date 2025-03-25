@@ -15,7 +15,7 @@ const LoginForm = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogIn = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -23,23 +23,20 @@ const LoginForm = () => {
       return;
     }
     try {
-      const response = await axios.post(`${url}/user/get-user`, {
+      const response = await axios.post(`${url}/user/get-user`,{
         email,
-        password,
       });
+      console.log(response);
 
-      // Assuming API returns a token or user data
-      if (response.data.token) {
-
-        const { token, userId, role } = response.data;  
-        localStorage.setItem("token", token); 
-        localStorage.setItem("userId", userId);
+      if (response.status === 200 && response.data) {
+        const { user: { user_id, role } } = response.data;
+        localStorage.setItem("userId", user_id);
         localStorage.setItem("role", role);
-
-        navigate("/dashboard", { state: {email, role } }); // Redirect to dashboard
+  
+        navigate("/dashboard", { state: { email, role } }); 
       } else {
         setError("Invalid credentials");
-      }
+      } 
     } catch (err) {
       setError("Failed to login");
       console.error(err);
@@ -76,7 +73,7 @@ const LoginForm = () => {
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleLogIn} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold pb-2">Email</label>
             <input
@@ -107,7 +104,7 @@ const LoginForm = () => {
         </p>
 
         <div className="flex justify-center ">
-          <Button href="/dashboard-student" white className="w-1/3 py-3">
+          <Button type="submit" white className="w-1/3 py-3">
             Log In
           </Button>
         </div>

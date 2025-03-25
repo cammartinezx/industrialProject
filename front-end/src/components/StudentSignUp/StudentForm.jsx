@@ -3,18 +3,21 @@ import { heroBackground } from "../../assets";
 import { BackgroundCircles } from "../design/Hero";
 import { useRef } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from "../design/Button";
-import { majors, gpaOptions, languageOptions, locationOptions, learningStyleOptions } from "../../constants";
+import { majors, gpaOptions, languageOptions, locationOptions, learningStyleOptions, url } from "../../constants";
 
 const StudentForm = () => {
   const parallaxRef = useRef(null);
-
+  const location = useLocation();
+  const userId = location.state?.userId || localStorage.getItem("userId");
+  const role = location.state?.role || localStorage.getItem("role");
   const [major, setMajor] = useState("");
   const [dob, setDob] = useState("");
   const [gpa, setGpa] = useState("");
-  const [location, setLocation] = useState("");
+  const [city, setCity] = useState("");
+
   const [preferredLanguage, setPreferredLanguage] = useState("");
   const [preferredLearningStyle, setPreferredLearningStyle] = useState("");
   const [error, setError] = useState(null);
@@ -29,18 +32,17 @@ const StudentForm = () => {
     }
 
     try {
-      const response = await axios.post("https://your-api.com/signup", {
-       
+      const response = await axios.post(`${url}/student/${userId}/create-student`, {
         dob,
         gpa,
-        location,
+        city,
         preferredLanguage,
      
       });
 
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token); // Store token in localStorage
-        navigate("/dashboard_student"); // Redirect to dashboard
+      if (response.status === 200) {
+        alert('Your account has been created');
+        navigate("/dashboard",{ state: {userId, role } }); // Redirect to dashboard
       } else {
         setError("Failed to sign up");
       }
@@ -116,8 +118,8 @@ const StudentForm = () => {
     <div>
       <label className="block text-sm font-semibold pb-2">Location</label>
       <select
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
         className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
         required
       >
@@ -165,9 +167,9 @@ const StudentForm = () => {
       </select>
     </div>
       
-                  {/* Sign Up Button */}
+                 
                   <div className="flex justify-center mt-6">
-                    <Button type="submit" white className="w-1/3 py-3" href={"/dashboard-student"}>
+                    <Button type="submit" white className="w-1/3 py-3">
                       Sign Up
                     </Button>
                   </div>
