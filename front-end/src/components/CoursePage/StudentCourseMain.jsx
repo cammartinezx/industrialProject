@@ -127,7 +127,7 @@ export const fetchName = async (user_id) => {
                     <span className="ml-3">{unit}</span>
                   </h5>
                   <div className="flex items-center space-x-2">
-                    <Link to={`/chat/${courseId}`} className="z-50">
+                    <Link to={`/chat/${courseId}/unit/${index+1}`} className="z-50">
                       Start chat
                     </Link>
                     <Arrow className="w-6 h-6 text-white" />

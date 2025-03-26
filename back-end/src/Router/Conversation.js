@@ -12,7 +12,7 @@ router.patch('/:id/update-message', async (req, res) => {
     conversation_handler.update_message(req, res);
 });
 
-router.get('/get-conversation', async (req, res) => {
+router.get('/get-conversation/:course_id/:unit', async (req, res) => {
     conversation_handler.get_conversation(req, res);
 });
 
