@@ -26,12 +26,12 @@ class ConversationHandler {
             const unit = request.body.unit.trim();
             const user_id = request.body.user_id || null;
             const course_id = request.body.course_id.trim();
-
-            if (edited_by !== null || original_message !== null || user_id !== null) {
+    
+            if (edited_by !== null || original_message !== null) {
                 edited_by = edited_by.trim();
                 original_message = original_message.trim();
-                user_id = user_id.trim();
             }
+
 
             try {
                 validateString(user_role);
@@ -72,8 +72,7 @@ class ConversationHandler {
 
     async get_conversation(request, response) {
         try {
-            const course_id = request.body.course_id.trim();
-            const unit = request.body.unit.trim()
+            const { course_id, unit } = request.params;
             const result = await this.#conversation_persistence.get_conversation(course_id, unit);
             response.status(result.status).json(result);
         } catch (error) {

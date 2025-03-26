@@ -5,16 +5,40 @@ import axios from "axios";
 import HeaderChatStudent from "../components/Headers/HeaderChatStudent";
 import HeaderStudent from "../components/Headers/HeaderChatStudent";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import { url } from "../constants";
 
 
 const ChatStudent = () => {
-  //const { courseId } = useParams(); 
-  //const userId = location.state?.userId || localStorage.getItem("userId");
+  const { courseId, unitIndex } = useParams();
+  const location = useLocation(); 
+  const userId = location.state?.userId || localStorage.getItem("userId");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+
+  // Function to fetch the conversation history
+  const fetchConversationHistory = async () => {
+    try {
+      const response = await axios.get(`${url}/conversation/get-conversation/${courseId}/unit ${unitIndex}`);
+      const conversation = response.data.conversation || [];
+      console.log("Conversation history:", conversation);
+      // Sort the messages by timestamp
+      const sortedMessages = conversation.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      setMessages(sortedMessages.map(msg => ({
+        sender: msg.user_role === "student" ? "user" : "ai",
+        text: msg.message,
+      })));
+    } catch (error) {
+      console.error("Error fetching conversation history:", error);
+    }
+  };
+
+  // Fetch the conversation history when the component mounts
+  useEffect(() => {
+    fetchConversationHistory();
+  }, [courseId, unitIndex]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -29,6 +53,26 @@ const ChatStudent = () => {
       const response = await axios.post(`${url}/chatbot/ask`, {
         msg: input, // Send the user's message
       });
+
+      // save the user message to the conversation table database
+      await axios.post(`${url}/conversation/add-message`, {
+        user_role: "student",
+        message: input,
+        unit: `unit ${unitIndex}`,
+        user_id: userId,
+        course_id: courseId,
+      });
+
+      // save the chatbot's response to the conversation table database
+      await axios.post(`${url}/conversation/add-message`, {
+        user_role: "chatbot",
+        message: response.data.response || "No response",
+        unit: `unit ${unitIndex}`,
+        user_id: userId,
+        course_id: courseId,
+      });
+
+      console.log("Message saved to conversation table");
   
       // Get the chatbot's response and update the chat
       setMessages((prev) => [
