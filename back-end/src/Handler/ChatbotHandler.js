@@ -8,7 +8,7 @@ class ChatbotHandler {
     constructor() {
         this.conversationHistory = [];
         this.knowledgeBase = this.loadKnowledgeBase();
-        this.isFirstInteraction = true;
+        this.hasSentIntro = false; // Track if intro has been sent
     }
 
     loadKnowledgeBase() {
@@ -91,15 +91,16 @@ You are provided the following content:\n${this.knowledgeBase}\n\nGenerate a con
 
     async chat(req, res) {
         try {
-            const message = req.body.msg ? req.body.msg.trim() : "";
-            console.log("Received message:", message);
-
-            if (this.isFirstInteraction) {
-                this.isFirstInteraction = false;
+            // Send intro message automatically on first interaction
+            if (!this.hasSentIntro) {
+                this.hasSentIntro = true;
                 const welcomeMessage = `Hi, I am Nova, your course bot, here to help you navigate this course. ${this.getOptionMenu()}`;
                 this.conversationHistory.push({ role: "assistant", content: welcomeMessage });
                 return res.json({ response: welcomeMessage });
             }
+
+            const message = req.body.msg ? req.body.msg.trim() : "";
+            console.log("Received message:", message);
 
             if (!message) {
                 return res.status(400).json({ error: "Message is required" });
