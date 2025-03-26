@@ -6,11 +6,13 @@ class CourseHandler {
     #course_persistence;
     #student_persistence;
     #instructor_persistence;
+    #user_persistence;
 
     constructor() {
         this.#course_persistence = Services.get_course_persistence();
         this.#student_persistence = Services.get_student_persistence();
         this.#instructor_persistence = Services.get_instructor_persistence();
+        this.#user_persistence = Services.get_user_persistence();
     }
 
     get_course_persistence() {
@@ -83,6 +85,28 @@ class CourseHandler {
             response.status(200).json({course});
         } catch (error) {
             response.status(500).json({ message: error.message });
+        }
+    }
+
+    async get_students_in_course(request, response) {
+        const { course_id } = request.params;
+        try {
+            // Fetch the students list from the course
+            const student_list = await this.#course_persistence.get_students_in_course(course_id);
+            
+            if (!student_list || student_list.length === 0) {
+                return response.status(404).json({ message: "No students found in this course" });
+            }
+
+            const students_info = [];
+            for (let student_id of student_list) {
+                const student = await this.#user_persistence.get_user(student_id);
+                students_info.push(student);
+            }
+            return response.status(200).json({ students_info });
+
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
         }
     }
 }

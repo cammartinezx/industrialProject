@@ -8,15 +8,27 @@ import { check } from "../../assets/index.js";
 
 
 import axios from "axios";
-import { classList, getCourseDetails, url } from "../../constants/index.js";
+import { getCourseDetails, url } from "../../constants/index.js";
 import { useEffect, useState } from "react";
 import Button2 from "../design/Button2.jsx";
 import Button from "../design/Button.jsx";
 import HeaderInstructor from "../Headers/HeaderInstructor.jsx";
 
 
-
-
+/**
+ * Fetch student list by course ID.
+ * @param {string} courseId 
+ * @returns {Promise<object>} - The list of students if successful.
+ */
+export const fetchStudentsByCourseId = async (courseId) => {
+  try {
+    const response = await axios.get(`${url}/course/${courseId}/get-students`);
+    return response.data.students_info;
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    throw new Error('Failed to fetch students');
+  }
+}
 
 /**
  * Fetch course details by course ID.
@@ -39,6 +51,7 @@ export const fetchCourseById = async (courseId) => {
   const InstructorCourseMain = () => {
     const { courseId } = useParams(); 
     const [course, setCourse] = useState(null);
+    const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const courseDetails = getCourseDetails(course);
@@ -55,9 +68,20 @@ export const fetchCourseById = async (courseId) => {
           setLoading(false);
         }
       };
+      
+      const fetchStudents = async () => {
+        try {
+          const studentList = await fetchStudentsByCourseId(courseId);
+          setStudents(studentList);
+        } catch (err) {
+          setError("Error fetching students");
+          console.error(err);
+        }
+      };
   
       if (courseId) {
         fetchCourse();
+        fetchStudents();
       }
     }, [courseId]);
   
@@ -106,7 +130,7 @@ export const fetchCourseById = async (courseId) => {
       
 
       <ul className="body-2 flex flex-col space-y-4">
-    {classList.map((student, index) => (
+    {students.map((student, index) => (
       <li
         key={index}
         className="flex items-center justify-between py-4 border-t border-b border-n-6 px-4"
@@ -116,14 +140,15 @@ export const fetchCourseById = async (courseId) => {
 
         {/* Buttons (Aligned to Right) */}
         <div className="flex space-x-2 ml-auto">
-        <Button2 type="button" white className="px-4 py-2">
-            See Info
-          </Button2>
           <Button2 type="button" white className="px-4 py-2">
-            Chat
+              See Info
           </Button2>
           
-         
+          <Link to={`/join-chat/${courseId}`}>
+            <Button2 type="button" white className="px-4 py-2">
+              Chat
+            </Button2>
+          </Link>
         </div>
       </li>
     ))}

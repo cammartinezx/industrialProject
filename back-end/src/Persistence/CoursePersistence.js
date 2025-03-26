@@ -101,7 +101,20 @@ class CoursePersistence {
         });
     
         await this.#doc_client.send(update_command);
-    }    
+    }
+
+    async get_students_in_course(course_id) {
+        const get_command = new GetCommand({
+            TableName: this.table_name,
+            Key: {
+                course_id: course_id,
+            },
+            ProjectionExpression: "student_list",
+        });
+        
+        const response = await this.#doc_client.send(get_command);
+        return response.Item?.student_list || [];
+    }
 }
 
 module.exports = CoursePersistence;
