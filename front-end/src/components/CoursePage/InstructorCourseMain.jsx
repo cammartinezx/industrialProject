@@ -144,7 +144,7 @@ export const fetchCourseById = async (courseId) => {
               See Info
           </Button2>
           
-          <Link to={`/join-chat/${courseId}`}>
+          <Link to={`/join-chat/${courseId}/${student.user_id}`}>
             <Button2 type="button" white className="px-4 py-2">
               Chat
             </Button2>

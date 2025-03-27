@@ -23,7 +23,6 @@ const ChatStudent = () => {
     try {
       const response = await axios.get(`${url}/conversation/get-conversation/${courseId}/unit ${unitIndex}`);
       const conversation = response.data.conversation || [];
-      console.log("Conversation history:", conversation);
       // Sort the messages by timestamp
       const sortedMessages = conversation.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
       setMessages(sortedMessages.map(msg => ({

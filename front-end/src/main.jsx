@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/manage-course/:courseId" element={<InstructorCourseMain />} />
         <Route path="/course/:courseId" element={<StudentCourseMain />} />
         <Route path="/chat/:courseId/unit/:unitIndex" element={<ChatStudent />} />
-        <Route path="/join-chat/:courseId" element={<ChatInstructor/>} />
+        <Route path="/join-chat/:courseId/:userId" element={<ChatInstructor/>} />
       </Routes>
     </Router>
   </StrictMode>,

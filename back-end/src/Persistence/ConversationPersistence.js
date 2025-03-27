@@ -121,6 +121,34 @@ class ConversationPersistence {
             return { status: 500, message: error.message };
         }
     }
+
+    async get_instructor_conversation(course_id, user_id) {
+        try {
+            const scan_command = new ScanCommand({
+                TableName: this.#table_name,
+                FilterExpression: "#course_id = :course_id AND #user_id = :user_id",
+                ExpressionAttributeNames: {
+                    "#course_id": "course_id",
+                    "#user_id": "user_id",
+                },
+                ExpressionAttributeValues: {
+                    ":course_id": course_id,
+                    ":user_id": user_id,
+                }
+            });
+            const response = await this.#doc_client.send(scan_command);
+            if (response.Items) {
+                // Sort the items by timestamp
+                response.Items.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                return { status: 200, conversation: response.Items };
+            } else {
+                return { status: 404, message: "Conversation not found" };
+            }
+        } catch (error) {
+            console.error(error);
+            return { status: 500, message: error.message };
+        }
+    }
 }
 
 module.exports = ConversationPersistence;

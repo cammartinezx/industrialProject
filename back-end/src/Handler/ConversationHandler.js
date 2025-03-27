@@ -80,6 +80,16 @@ class ConversationHandler {
         }
     }
 
+    async get_instructor_conversation(request, response) {  
+        try {
+            const { course_id, user_id } = request.params;
+            const result = await this.#conversation_persistence.get_instructor_conversation(course_id, user_id);
+            response.status(result.status).json(result);
+        } catch (error) {
+            response.status(500).json({ message: error.message });
+        }
+    }
+
 
     getCanadianTimestamp(timeZone = 'America/Winnipeg') {
         const date = new Date();
