@@ -121,7 +121,7 @@ class CoursePersistence {
             console.error("Error updating course:", error);
         }
     }     
-    }
+    
 
     async get_students_in_course(course_id) {
         const get_command = new GetCommand({
