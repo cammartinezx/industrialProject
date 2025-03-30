@@ -6,7 +6,7 @@ import HeaderStudent from "../components/Headers/HeaderChatStudent";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { url } from "../constants";
-import { useLocation } from "react-router-dom";
+
 
 
 const ChatStudent = () => {
