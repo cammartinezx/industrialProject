@@ -1,17 +1,19 @@
+
+
 //import { useParams } from "react-router-dom";
 import axios from "axios";
 import HeaderChatStudent from "../components/Headers/HeaderChatStudent";
 import HeaderStudent from "../components/Headers/HeaderChatStudent";
-
+import html2pdf from "html2pdf.js";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { url } from "../constants";
 
 
-
 const ChatStudent = () => {
   const { courseId, unitIndex } = useParams();
-  const location = useLocation(); 
+  const location = useLocation();
+  const title = location.state?.title || courseId;
   const userId = location.state?.userId || localStorage.getItem("userId");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -20,19 +22,49 @@ const ChatStudent = () => {
   // Function to fetch the conversation history
   const fetchConversationHistory = async () => {
     try {
-      const response = await axios.get(`${url}/conversation/get-conversation/${courseId}/unit ${unitIndex}`);
-      const conversation = response.data.conversation || [];
-      // Sort the messages by timestamp
-      const sortedMessages = conversation.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      // const response = await axios.get(`${url}/conversation/get-conversation/${courseId}/unit ${unitIndex}`);
+      // const conversation = response.data.conversation || [];
+  
+      const conversation = {
+        "conversation": [
+          {
+            "user_role": "student",
+            "message": "Hello, can you help me understand recursion?",
+            "timestamp": "2025-03-29T10:00:00Z"
+          },
+          {
+            "user_role": "ai",
+            "message": "Sure! Recursion is when a function calls itself to solve smaller instances of a problem.",
+            "timestamp": "2025-03-29T10:01:00Z"
+          },
+          {
+            "user_role": "student",
+            "message": "Can you give me an example?",
+            "timestamp": "2025-03-29T10:02:00Z"
+          },
+          {
+            "user_role": "ai",
+            "message": "Of course! The classic example is the factorial function: factorial(n) = n * factorial(n-1).",
+            "timestamp": "2025-03-29T10:03:00Z"
+          }
+        ]
+      };
+  
+      // ✅ Fix: Sort the messages inside the "conversation" array
+      const sortedMessages = conversation.conversation.sort((a, b) => 
+        new Date(a.timestamp) - new Date(b.timestamp)
+      );
+  
       setMessages(sortedMessages.map(msg => ({
         sender: msg.user_role === "student" ? "user" : "ai",
         text: msg.message,
       })));
+  
     } catch (error) {
       console.error("Error fetching conversation history:", error);
     }
   };
-
+  
   // Fetch the conversation history when the component mounts
   useEffect(() => {
     fetchConversationHistory();
@@ -87,42 +119,107 @@ const ChatStudent = () => {
       setIsTyping(false);
     }
   };
-
-  const handleDownloadPDF = () => {
-        const element = document.getElementById("course-content"); // Select the part of the page to download
-      
-        html2pdf()
-          .set({
-            margin: 10,
-            filename: courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`,
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          })
-          .from(element)
-          .save();
-      };
+  
+  const handleDownloadPDF = async () => {
+    const element = document.getElementById("course-content");
+  
+    try {
+      const pdfBlob = await html2pdf()
+        .set({
+          margin: 10,
+          filename: courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .from(element)
+        .toPdf()
+        .output('blob'); 
+  
+      // 1️⃣ Save the PDF to the device
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      const a = document.createElement("a");
+      a.href = pdfUrl;
+      a.download = courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(pdfUrl); // Clean up
+  
+      // 2️⃣ Upload the PDF to S3
+      await storePDF(pdfBlob);
+  
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
   
 
+  const storePDF = async (pdfBlob) => {
+    try {
+      if (!pdfBlob) {
+        alert("No file to upload.");
+        return;
+      }
+  
+      // 🟢 Get a pre-signed URL from your backend
+      const res = await axios.get(`${url}/student-s3Url`, {
+        params: { 
+          fileName: `${userId}/${courseId}/${title}.pdf`, 
+          fileType: "application/pdf" 
+        },
+      });
+  
+      const urlS3 = res.data.urlS3?.uploadURL;
+      if (!urlS3) throw new Error("Failed to get S3 upload URL");
+  
+      // 🟢 Upload the PDF to S3
+      console.log("Uploading PDF to S3...");
+      const uploadResponse = await axios.put(urlS3, pdfBlob, {
+        headers: { "Content-Type": "application/pdf" }
+      });
+  
+      if (uploadResponse.status === 200) {
+        console.log("PDF uploaded successfully!");
+  
+        // 🟢 Get the final S3 file URL
+        const fileUrl = urlS3.split("?")[0];
+        console.log("Final S3 URL:", fileUrl);
+  
+        alert("PDF uploaded to S3 successfully!");
+      } else {
+        throw new Error("S3 upload failed");
+      }
+  
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Failed to upload PDF.");
+    }
+  };
+  
   
 
   return (
     <>
-    <div id="course-content">
+      <div id="course-content">
+      <div className="h-screen flex flex-col pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden">
+    
       <div
-  className="fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm bg-n-8/90 backdrop-blur-sm"
+  className="fixed top-3 left-2 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm bg-n-8/90 backdrop-blur-sm"
 >
-  <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
+  <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-2 h-16">
     {/* Left: Back Arrow */}
     <button onClick={() => window.history.back()} className="text-n-1 hover:text-color-1">
       ←
     </button>
 
     {/* Center: Title */}
-    <h2 className="text-lg font-semibold text-n-1">{title}</h2>
+    <h2 className="text-lg font-code text-2xl uppercase text-n-1 flex-grow text-center md:py-8 lg:-mr-0.25 lg:text-s lg:font-semibold">
+      {title}
+    </h2>
 
     {/* Right: Download Button */}
-    <button onClick={handleDownloadPDF} className="text-n-1 hover:text-color-1">
+    <button onClick={handleDownloadPDF} className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold">
       Download
     </button>
   </div>
@@ -171,11 +268,11 @@ const ChatStudent = () => {
             Send
           </button>
         </div>
-        </div>
+      </div>
+      </div>
     </>
   );
 };
 
 
  export default ChatStudent;
-

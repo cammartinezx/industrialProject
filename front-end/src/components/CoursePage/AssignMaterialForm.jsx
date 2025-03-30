@@ -34,7 +34,7 @@ class AssignMaterialForm extends React.Component {
         try {
             // 1️⃣ Get a pre-signed URL from your backend
             const res = await axios.get(`${url}/s3Url`, {
-                params: { fileName: `${courseId}-${title}`, fileType: file.type},
+                params: { fileName: `${courseId}/${title}`, fileType: file.type},
               });
               // Extract the uploadURL directly as a string
               const urlS3 = res.data.urlS3?.uploadURL;

@@ -34,6 +34,11 @@ app.get('/s3Url', async (req, res) => {
     const urlS3 = await generateUploadURL(fileName)
     res.send({urlS3})
   })
+app.get('/student-s3Url', async (req, res) => {
+    const {fileName} = req.query;
+    const urlS3 = await generateUploadURL(fileName, true)
+    res.send({urlS3})
+  })
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
