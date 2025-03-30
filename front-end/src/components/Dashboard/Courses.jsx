@@ -45,8 +45,7 @@ const Courses = () => {
 
           } else {
             response = await axios.get(`${url}/student/${userId}/courses`);
-        
-            courseIds = response.body|| [];
+            courseIds = response.data.courses_enrolled || [];
            
           }
          
