@@ -5,7 +5,7 @@ import ButtonGradient from "../../assets/svg/ButtonGradient.jsx";
 
 import { Link, useParams } from "react-router-dom";
 import { check } from "../../assets/index.js";
-
+ // Import the modal
 
 import axios from "axios";
 import { classList, getCourseDetails, url } from "../../constants/index.js";
@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Button2 from "../design/Button2.jsx";
 import Button from "../design/Button.jsx";
 import HeaderInstructor from "../Headers/HeaderInstructor.jsx";
+import AssignMaterialDialog from "./AssignMaterialDialog.jsx";
 
 
 
@@ -42,6 +43,7 @@ export const fetchCourseById = async (courseId) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const courseDetails = getCourseDetails(course);
+    const [open, setOpen] = useState(false);
     useEffect(() => {
       const fetchCourse = async () => {
         try {
@@ -88,14 +90,17 @@ export const fetchCourseById = async (courseId) => {
     ))}
   </ul>
 
-  {/* Assign Material Button - Takes Up 1/3 of the Width */}
-  <Button type="submit" className="w-1/4 py-5">
-    Assign<br /> Material
-  </Button>
+  <Button type="button" className="w-1/4 py-5" onClick={() => setOpen(true)}>
+                        Assign<br /> Material
+                    </Button>
+                    
+                </div>
+            </div>
+
+            <div className="relative z-50">
+  {open && <AssignMaterialDialog open={open} setOpen={setOpen} courseId={courseId} />}
 </div>
 
-
-</div>
 
 <div className="container relative z-2 mt-6">
 

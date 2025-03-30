@@ -132,7 +132,7 @@ const parallaxRef = useRef(null);
             <p className="text-red-500 text-sm mt-2">Passwords do not match.</p>
           )}
         </div>
-
+        <div className="flex justify-center mt-6">
         <Button 
   type="submit" 
   white 
@@ -141,6 +141,7 @@ const parallaxRef = useRef(null);
 >
   Continue
 </Button>
+</div>
 
         {/* Already have an account? */}
         <p className="text-sm text-center text-n-2 pt-4">

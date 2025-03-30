@@ -172,36 +172,9 @@ class InstructorHandler {
         }
     }
     
-    async get_courses_taught(request, response) {
-        try {
-            let user_id = request.params.id.trim().toLowerCase();
     
-            // Validate user_id
-            try {
-                validateString(user_id, "user");
-            } catch (error) {
-                return response.status(422).json({ message: error.message });
-            }
     
-            // Check if user exists
-            try {
-                await validateUserExist(this.#user_persistence, user_id);
-                
-            } catch (error) {
-                return response.status(404).json({ message: error.message });
-            }
-      
-    
-            try {
-                let courses_taught = await this.#instructor_persistence.get_courses_taught(user_id);
-                return response.status(200).json({ courses_taught });
-            } catch (error) {
-                return response.status(404).json({ message: error.message });
-            }
-        } catch (error) {
-            return response.status(500).json({ message: error.message });
-        }
-    }
+   
 
    
 }

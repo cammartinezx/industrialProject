@@ -6,6 +6,7 @@ import Button from "../design/Button";
 import MenuSvg from "../../assets/svg/MenuSvg";
 import { HamburgerMenu } from "../design/Header";
 import { useState } from "react";
+import ButtonGradient from "../../assets/svg/ButtonGradient";
 
 const Header = () => {
   const pathname = useLocation();
@@ -67,7 +68,7 @@ const Header = () => {
         </nav>
 
         <a
-          href="#singup"
+          href="/signup"
           className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
         >
           Sign Up
@@ -75,6 +76,7 @@ const Header = () => {
         <Button className="hidden lg:flex " href="/login">
           Log In
         </Button>
+        <ButtonGradient/>
 
         <Button
           className="ml-auto lg:hidden"
