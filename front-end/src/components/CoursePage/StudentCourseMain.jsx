@@ -1,12 +1,8 @@
 
 
 import Arrow from "../../assets/svg/Arrow.jsx";
-
-
 import { Link, useParams } from "react-router-dom";
 import { cardbg, check } from "../../assets/index.js";
-
-
 import axios from "axios";
 import { url } from "../../constants/index.js";
 import { useEffect, useState } from "react";
@@ -40,6 +36,7 @@ export const fetchName = async (user_id) => {
     throw new Error("Failed to fetch user name");
   }
 };
+
 
 
 
@@ -80,7 +77,7 @@ export const fetchName = async (user_id) => {
     if (error) return <p className="text-center text-red-500 mt-20">{error}</p>;
   
     return (
-      <>
+      <div id="course-content bg-n-8/90">
         <HeaderStudent />
         <div className="container relative z-2 mt-28">
           <h2 className="h2 mb-4 font-bold">{course?.title}</h2>
@@ -127,7 +124,7 @@ export const fetchName = async (user_id) => {
                     <span className="ml-3">{unit}</span>
                   </h5>
                   <div className="flex items-center space-x-2">
-                    <Link to={`/chat/${courseId}`} className="z-50">
+                    <Link to={`/chat/${courseId}`}  state={{ title: course?.title }}  className="z-50">
                       Start chat
                     </Link>
                     <Arrow className="w-6 h-6 text-white" />
@@ -141,9 +138,10 @@ export const fetchName = async (user_id) => {
                 </div>
               </div>
             ))}
+
           </div>
         </div>
-      </>
+      </div>
     );
   };
   
