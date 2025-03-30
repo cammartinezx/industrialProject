@@ -41,11 +41,12 @@ const Courses = () => {
     
           if (role === "instructor") {
             response = await axios.get(`${url}/instructor/${userId}/courses-taught`);
-            courseIds = response.data.courses_taught;
-    
+            courseIds = response.data.courses_taught || [];  
+
           } else {
             response = await axios.get(`${url}/student/${userId}/courses`);
-            courseIds = response.data.courses_enrolled;
+        
+            courseIds = response.body|| [];
            
           }
          

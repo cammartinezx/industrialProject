@@ -199,9 +199,10 @@ class StudentHandler {
             }
             try {
                 let courses_enrolled = await this.#student_persistence.get_courses_enrolled(user_id);
+                
                 return response.status(200).json({ courses_enrolled });
             } catch (error) {
-                return response.status(404).json({ message: error.message });
+                return response.status(404).json({ message: "You are not enrolled in any course yet" });
             }
         } catch (error) {
             return response.status(500).json({ message: error.message });

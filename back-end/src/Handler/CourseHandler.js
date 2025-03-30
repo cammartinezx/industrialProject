@@ -21,7 +21,7 @@ class CourseHandler {
 
     async create_course(request, response) {
         try {
-            const course_id = request.body.course_id.trim();
+            let course_id = request.params.id.trim().toLowerCase();
             const title = request.body.title.trim();
             const course_description = request.body.description.trim();
             const instructor_id = request.body.instructor_id.trim().toLowerCase();
@@ -51,16 +51,17 @@ class CourseHandler {
         }
     }
 
-    async add_student(request, response) {
+    
+    async add_unit(request, response) {
         try {
-            const student_id = request.body.student_id.trim().toLowerCase();
-            const course_id = request.body.course_id.trim();
+            const unit_title = request.body.unit_title.trim();
+            let course_id = request.params.id.trim().toLowerCase();
 
             // check if the student exists
-            const student = await this.#student_persistence.get_student(student_id);
-            if (student === null) {
-                return response.status(404).json({ message: "Student not found" });
-            }
+            // const student = await this.#student_persistence.get_student(unit_title);
+            // if (student === null) {
+            //     return response.status(404).json({ message: "Student not found" });
+            // }
 
             // check if the course exists
             const course = await this.#course_persistence.get_course(course_id);
@@ -68,11 +69,12 @@ class CourseHandler {
                 return response.status(404).json({ message: "Course not found" });
             }
 
-            // add the course id to student's table of courses
-            await this.#student_persistence.add_course(student_id, course_id);
-            // add the student to the course
-            await this.#course_persistence.add_student(student_id, course_id);
-            response.status(200).json({ message: "Student added to course" });
+
+            // add the unit to the course
+            const res = await this.#course_persistence.add_unit(unit_title, course_id);
+            console.log(res);
+            
+            response.status(200).json({ message: "Unit added to course successfully" });
         } catch (error) {
             response.status(500).json({ message: error.message });  
         }

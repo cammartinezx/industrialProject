@@ -1,5 +1,3 @@
-
-
 //import { useParams } from "react-router-dom";
 import axios from "axios";
 import HeaderChatStudent from "../components/Headers/HeaderChatStudent";
@@ -8,6 +6,7 @@ import HeaderStudent from "../components/Headers/HeaderChatStudent";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { url } from "../constants";
+import { useLocation } from "react-router-dom";
 
 
 const ChatStudent = () => {
@@ -88,14 +87,48 @@ const ChatStudent = () => {
       setIsTyping(false);
     }
   };
+
+  const handleDownloadPDF = () => {
+        const element = document.getElementById("course-content"); // Select the part of the page to download
+      
+        html2pdf()
+          .set({
+            margin: 10,
+            filename: courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          })
+          .from(element)
+          .save();
+      };
   
 
   
 
   return (
     <>
-      <div className="h-screen flex flex-col pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden">
-       <HeaderChatStudent/>
+    <div id="course-content">
+      <div
+  className="fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm bg-n-8/90 backdrop-blur-sm"
+>
+  <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
+    {/* Left: Back Arrow */}
+    <button onClick={() => window.history.back()} className="text-n-1 hover:text-color-1">
+      ←
+    </button>
+
+    {/* Center: Title */}
+    <h2 className="text-lg font-semibold text-n-1">{title}</h2>
+
+    {/* Right: Download Button */}
+    <button onClick={handleDownloadPDF} className="text-n-1 hover:text-color-1">
+      Download
+    </button>
+  </div>
+</div>
+
+
 
         {/* Chat messages */}
         <div className="flex-1 p-4 overflow-y-auto">
@@ -138,7 +171,7 @@ const ChatStudent = () => {
             Send
           </button>
         </div>
-      </div>
+        </div>
     </>
   );
 };

@@ -7,6 +7,7 @@ const Conversation = require("./Router/Conversation.js");
 
 const express = require('express');
 const cors = require('cors');
+const { generateUploadURL } = require("./s3.js");
 require("dotenv").config();
 
 
@@ -21,12 +22,18 @@ app.use("/course", Course);
 app.use('/student', Student);
 app.use('/instructor', Instructor);
 app.use('/conversation', Conversation);
-//app.use('/course', Course);
+
 
 app.get("/", async (req, res) => {
     console.log(req.body);
     res.status(200).json({ message: "we cooking rn" });
 });
+
+app.get('/s3Url', async (req, res) => {
+    const {fileName} = req.query;
+    const urlS3 = await generateUploadURL(fileName)
+    res.send({urlS3})
+  })
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

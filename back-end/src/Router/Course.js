@@ -16,6 +16,10 @@ router.post('/add-student', async (req, res) => {
     course_handler.add_student(req, res);
 });
 
+router.post('/:id/add-unit', async (req, res) => {
+    course_handler.add_unit(req, res);
+});
+
 router.get('/:course_id/get-students', async (req, res) => {
     course_handler.get_students_in_course(req, res);
 });
