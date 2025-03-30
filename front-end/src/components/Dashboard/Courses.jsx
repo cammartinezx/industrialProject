@@ -99,7 +99,7 @@ const Courses = () => {
         {courses.map((item) => (
           <div
             className="group block relative p-5 bg-no-repeat bg-[length:100%_100%] md:max-w-[24rem]"
-            style={{ backgroundImage: `url(${cardDesign[1]})` }}
+            
             key={item.course.course_id}
           >
             <div className="relative z-2 flex flex-col min-h-[22rem]">
