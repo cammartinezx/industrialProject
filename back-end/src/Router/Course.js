@@ -16,6 +16,10 @@ router.post('/add-student', async (req, res) => {
     course_handler.add_student(req, res);
 });
 
+router.post('/:id/add-unit', async (req, res) => {
+    course_handler.add_unit(req, res);
+});
+
 router.use("/", (req, res) => {
     res.status(200).json({ Message: "Welcome to the Course paths" });
 });

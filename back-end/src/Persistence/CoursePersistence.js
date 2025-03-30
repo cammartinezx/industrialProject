@@ -38,8 +38,6 @@ class CoursePersistence {
                     title: title,
                     description: course_description,
                     instructor: instructor_id,
-                    student_list: [], // Initialize empty array if needed
-                    unit_list: [] // Initialize empty array if needed
                 },
                 ConditionExpression: "attribute_not_exists(course_id)",
             });
@@ -101,7 +99,28 @@ class CoursePersistence {
         });
     
         await this.#doc_client.send(update_command);
-    }    
+    } 
+    async add_unit(unit_title, courseID) {
+        const update_command = new UpdateCommand({
+            TableName: this.table_name,
+            Key: {
+                course_id: courseID,
+            },
+            UpdateExpression: "SET unit_list = list_append(if_not_exists(unit_list, :empty_list), :unit)",
+            ExpressionAttributeValues: {
+                ":unit": [unit_title],
+                ":empty_list": [],
+            },
+        });
+
+        try {
+            console.log("Executing DynamoDB update...");
+            const response = await this.#doc_client.send(update_command);
+            console.log("Update successful:", response);
+        } catch (error) {
+            console.error("Error updating course:", error);
+        }
+    }     
 }
 
 module.exports = CoursePersistence;

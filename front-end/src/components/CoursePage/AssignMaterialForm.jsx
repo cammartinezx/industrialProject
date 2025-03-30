@@ -43,11 +43,31 @@ class AssignMaterialForm extends React.Component {
             console.log("Uploading file to S3...");
             console.log(urlS3);
            
-            const response = await axios.put(urlS3, file, {
+            const uploadResponse = await axios.put(urlS3, file, {
                 headers: { "Content-Type": file.type }
             });
-            console.log(response );
+
+        if (uploadResponse.status === 200) {
             console.log("File uploaded successfully!");
+
+            // 3️⃣ Extract the file URL from the pre-signed URL
+            const fileUrl = urlS3.split("?")[0];
+            console.log("Final file URL:", fileUrl);
+
+            // 4️⃣ Add unit to course after successful upload
+            await axios.post(`${url}/course/${courseId}/add-unit`, {
+                unit_title: title,
+                //fileUrl: fileUrl,
+            });
+
+            console.log("Unit added successfully!");
+
+            this.props.closeModal(); // Close modal after success
+        } else {
+            throw new Error("File upload failed");
+        }
+          
+
         
             // 3️⃣ Extract the file URL from the pre-signed URL
             const fileUrl = urlS3.split("?")[0];
