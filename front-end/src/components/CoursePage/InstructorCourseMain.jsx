@@ -46,6 +46,72 @@ export const fetchCourseById = async (courseId) => {
   }
 };
 
+// export const handleDownload = async (e) => {
+//   e.preventDefault();
+
+//   try {
+//     // Request a signed download URL from your backend
+//     const res = await axios.get(`${url}/s3Url-download`, {
+//       params: { fileName: `stat3000` }, // Change this to match your S3 structure
+//     });
+
+//     const downloadURL = res.data.urlS3?.downloadURL;
+    
+//     if (!downloadURL) {
+//       throw new Error("Failed to retrieve the file URL.");
+//     }
+
+//     console.log("Download URL:", downloadURL);
+
+//     // Open the file in a new tab
+//     window.open(downloadURL, "_blank");
+    
+//   } catch (error) {
+//     console.error("Download failed:", error);
+//     alert("Failed to download material.");
+//   }
+// };
+
+// async function loadKnowledgeBase() {
+//   try {
+//       console.log("Fetching pre-signed URL...");
+
+//       // 🔹 1️⃣ Get the pre-signed URL
+//       const res = await axios.get(`${url}/s3Url-download`, {
+//           params: { fileName: "stat3000/representation" },
+//       });
+
+//       const s3Url = res.data.urlS3?.downloadURL;
+//       if (!s3Url) {
+//           throw new Error("Failed to get S3 file URL");
+//       }
+
+//       console.log("S3 URL received:", s3Url);
+
+//       // 🔹 2️⃣ Fetch the markdown file
+//       const fileResponse = await axios.get(s3Url);
+//       console.log("Raw Markdown Content:", fileResponse);
+//       let markdownContent = fileResponse.data;
+
+//       // ✅ Log raw content for debugging
+//       console.log("Raw Markdown Content:", markdownContent);
+
+//       // 🔹 3️⃣ Process the markdown content
+//       markdownContent = markdownContent.replace(/<aside.*?<\/aside>/gs, '');
+
+//       // ✅ Log cleaned content before parsing
+//       console.log("Cleaned Markdown Content:", markdownContent);
+
+//       // return marked.parse(markdownContent, { mangle: false, headerIds: false })
+//       //              .replace(/<[^>]+>/g, '')
+//       //              .replace(/\n+/g, '\n')
+//       //              .trim();
+      
+//   } catch (error) {
+//       console.error("Error loading knowledge base:", error);
+//       throw new Error("Failed to load knowledge base.");
+//   }
+// }
 
 
 
@@ -145,9 +211,9 @@ export const fetchCourseById = async (courseId) => {
 
         {/* Buttons (Aligned to Right) */}
         <div className="flex space-x-2 ml-auto">
-          <Button2 type="button" white className="px-4 py-2">
-              See Info
-          </Button2>
+        <Button2 type="button" white className="px-4 py-2" >
+    See Info
+  </Button2>
           
           <Link to={`/join-chat/${courseId}/${student.user_id}`}>
             <Button2 type="button" white className="px-4 py-2">

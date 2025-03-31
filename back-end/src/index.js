@@ -7,7 +7,7 @@ const Conversation = require("./Router/Conversation.js");
 
 const express = require('express');
 const cors = require('cors');
-const { generateUploadURL } = require("./s3.js");
+const { generateUploadURL, generateDownloadURL } = require("./s3.js");
 require("dotenv").config();
 
 
@@ -39,7 +39,16 @@ app.get('/student-s3Url', async (req, res) => {
     const urlS3 = await generateUploadURL(fileName, true)
     res.send({urlS3})
   })
-
+  app.get('/s3Url-download', async (req, res) => {
+    const {fileName} = req.query;
+    const urlS3 = await generateDownloadURL(fileName)
+    res.send({urlS3})
+  })
+app.get('/student-s3Url-download', async (req, res) => {
+    const {fileName} = req.query;
+    const urlS3 = await generateDownloadURL(fileName, true)
+    res.send({urlS3})
+  })
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
