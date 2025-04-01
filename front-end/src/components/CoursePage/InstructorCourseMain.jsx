@@ -52,7 +52,7 @@ export const fetchCourseById = async (courseId) => {
 //   try {
 //     // Request a signed download URL from your backend
 //     const res = await axios.get(`${url}/s3Url-download`, {
-//       params: { fileName: `stat3000` }, // Change this to match your S3 structure
+//       params: { fileName:`stat3000`},
 //     });
 
 //     const downloadURL = res.data.urlS3?.downloadURL;

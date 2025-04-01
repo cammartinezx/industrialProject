@@ -1,3 +1,5 @@
+export const url = "http://localhost:3001"
+
 import {
   benefitIcon1,
  
@@ -33,10 +35,6 @@ import {
   twitter,
   yourlogo,
 } from "../assets";
-
-export const url = "http://localhost:3001"
-
-
 
 export const navigation = [
   {

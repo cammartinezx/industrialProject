@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const marked = require("marked");
 
+
 class ChatbotHandler {
     constructor() {
         this.conversationHistory = [];
@@ -32,7 +33,7 @@ class ChatbotHandler {
       console.log("Fetching pre-signed URL...");
 
       // Get the pre-signed URL
-      const res = await axios.get(`${url}/s3Url-download`, {
+      const res = await axios.get(`http://localhost:3001/s3Url-download`, {
           params: { fileName: "stat3000/representation" },
       });
 

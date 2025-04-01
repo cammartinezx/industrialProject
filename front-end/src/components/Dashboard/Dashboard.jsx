@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import Courses from "./Courses.jsx";
 import HeaderStudent from "../Headers/HeaderStudent.jsx";
 import HeaderInstructor from "../Headers/HeaderInstructor.jsx";
+import PastConversationsTable from './PastConversationsTable.jsx';
+
+
+
+
 
 const ChatRequestsTable = () => {
   const [chatRequests, setChatRequests] = useState([]);
@@ -123,6 +128,11 @@ const ChatRequestsTable = () => {
   );
 };
 
+
+
+
+
+
 const Dashboard = () => {
   const role = location.state?.role || localStorage.getItem("role");
   const [activeTab, setActiveTab] = useState('courses');
@@ -157,13 +167,32 @@ const Dashboard = () => {
                 Chat Requests
               </button>
             )}
+            {role === 'student' && (
+              <button
+                className={`py-3 px-6 font-medium text-lg ${
+                  activeTab === 'pastConversations' 
+                    ? 'text-purple-500 border-b-2 border-purple-500' 
+                    : 'text-n-2 hover:text-n-1'
+                }`}
+                onClick={() => setActiveTab('pastConversations')}
+              >
+                Past Conversations
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Tab Content */}
-        <div className="container mx-auto px-4 pb-10">
-          {activeTab === 'courses' ? <Courses /> : <ChatRequestsTable />}
-        </div>
+      {/* Tab Content */}
+<div className="container mx-auto px-4 pb-10">
+  {activeTab === 'courses' ? (
+    <Courses />
+  ) : role === 'student' ? (
+    <PastConversationsTable />
+  ) : (
+    <ChatRequestsTable />
+  )}
+</div>
+
       </div>
     </>
   );
