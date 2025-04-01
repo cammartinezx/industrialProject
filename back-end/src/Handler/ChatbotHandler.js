@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const marked = require("marked");
 
+
 class ChatbotHandler {
     constructor() {
         this.conversationHistory = [];
@@ -11,21 +12,62 @@ class ChatbotHandler {
         this.hasSentIntro = false; // Track if intro has been sent
     }
 
-    loadKnowledgeBase() {
-        const markdownPath = path.resolve(__dirname, "../../ollama-backend/courses-data/comp-2280/unit1_representation.md");
+    // loadKnowledgeBase() {
+    //     const markdownPath = path.resolve(__dirname, "../../ollama-backend/courses-data/comp-2280/unit1_representation.md");
 
-        if (!fs.existsSync(markdownPath)) {
-            throw new Error(`Markdown file not found at: ${markdownPath}`);
-        }
+    //     if (!fs.existsSync(markdownPath)) {
+    //         throw new Error(`Markdown file not found at: ${markdownPath}`);
+    //     }
 
-        let markdownContent = fs.readFileSync(markdownPath, "utf-8");
-        markdownContent = markdownContent.replace(/<aside.*?<\/aside>/gs, '');
+    //     let markdownContent = fs.readFileSync(markdownPath, "utf-8");
+    //     markdownContent = markdownContent.replace(/<aside.*?<\/aside>/gs, '');
 
-        return marked.parse(markdownContent, { mangle: false, headerIds: false })
-                     .replace(/<[^>]+>/g, '')
-                     .replace(/\n+/g, '\n')
-                     .trim();
-    }
+    //     return marked.parse(markdownContent, { mangle: false, headerIds: false })
+    //                  .replace(/<[^>]+>/g, '')
+    //                  .replace(/\n+/g, '\n')
+    //                  .trim();
+    // }
+
+ async loadKnowledgeBase() {
+  try {
+      console.log("Fetching pre-signed URL...");
+
+      // Get the pre-signed URL
+      const res = await axios.get(`http://localhost:3001/s3Url-download`, {
+          params: { fileName: "stat3000/representation" },
+      });
+
+      const s3Url = res.data.urlS3?.downloadURL;
+      if (!s3Url) {
+          throw new Error("Failed to get S3 file URL");
+      }
+
+      console.log("S3 URL received:", s3Url);
+
+      // Fetch the markdown file
+      const fileResponse = await axios.get(s3Url);
+      console.log("Raw Markdown Content:", fileResponse);
+      let markdownContent = fileResponse.data;
+
+      // Log raw content for debugging
+      console.log("Raw Markdown Content:", markdownContent);
+
+      // Process the markdown content
+      markdownContent = markdownContent.replace(/<aside.*?<\/aside>/gs, '');
+
+      //Log cleaned content before parsing
+      console.log("Cleaned Markdown Content:", markdownContent);
+
+      return marked.parse(markdownContent, { mangle: false, headerIds: false })
+                   .replace(/<[^>]+>/g, '')
+                   .replace(/\n+/g, '\n')
+                   .trim();
+      
+  } catch (error) {
+      console.error("Error loading knowledge base:", error);
+      throw new Error("Failed to load knowledge base.");
+  }
+}
 
     async getAccessToken() {
         const keyPath = path.resolve(__dirname, "../../ollama-backend/key.json");
