@@ -21,10 +21,13 @@ const notification_handler = new NotificationHandler();
  * @code {500} Backend error from the database
  * @response {String} message See description of the different status codes
  */
-router.post("/create-new", (req, res) => {
+router.post("/create-new-notification", (req, res) => {
     notification_handler.create_notification(req, res);
 });
 
+router.get("/get-notification/:user_id", (req, res) => {
+    notification_handler.get_notification(req, res);
+});
 
 router.use("/", (req, res) => {
     res.status(200).json({ message: "Welcome to the Notification paths" });

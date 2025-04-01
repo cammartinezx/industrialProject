@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+const dotenv = require("dotenv");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ const studentS3Client = new S3Client({
 });
 
 // 🔹 Generate Pre-Signed Upload URL
-export async function generateUploadURL(file_name, isStudent = false) {
+async function generateUploadURL(file_name, isStudent = false) {
   const bucketName = isStudent ? process.env.STUDENT_BUCKET_NAME : process.env.BUCKET_NAME;
   const s3Client = isStudent ? studentS3Client : defaultS3Client;
 
@@ -35,3 +35,5 @@ export async function generateUploadURL(file_name, isStudent = false) {
 
   return { uploadURL };
 }
+
+module.exports = { generateUploadURL };

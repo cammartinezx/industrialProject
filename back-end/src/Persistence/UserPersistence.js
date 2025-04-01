@@ -111,6 +111,53 @@ class UserPersistence {
     
         }
     }
+
+    /**
+     * Updates the user notifications field with the new notification id
+     * @param {String} notif_id "The unique identifier for the notification"
+     * @param {String} user_id "The id for the user who now belongs to this notification"
+     */
+    async update_user_notifications(notif_id, user_id) {
+        const update_command = new UpdateCommand({
+            TableName: "User",
+            Key: {
+                user_id: user_id,
+            },
+            UpdateExpression: "SET #notif = list_append(if_not_exists(#notif, :empty_list), :notif_id)",
+            ExpressionAttributeNames: {
+                "#notif": "notification",
+            },
+            ExpressionAttributeValues: {
+                ":notif_id": [notif_id], // Wrap notif_id in an array for appending to the list
+                ":empty_list": [], // Handle the case where the notification attribute doesn't exist
+            },
+            ConditionExpression: "attribute_exists(user_id)", // Ensure the user exists
+            ReturnValues: "NONE",
+        });
+        await this.#doc_client.send(update_command);
+    }
+
+    /**
+     * Uses dynamodb GetCommand to get list of notification from existing user from database
+     * @param {String} user_id "New user's name to be added to the database"
+     * @returns {String} "Return list of notification or throw new error if no notification for exist user"
+     */
+    async get_notifications(user_id) {
+        const get_command = new GetCommand({
+            TableName: "User",
+            Key: {
+                user_id: user_id,
+            },
+        });
+        const response = await this.#doc_client.send(get_command);
+
+        let notification = response.Item.notification;
+        if (notification === undefined) {
+            // throw new Error(`User ${user_id} doesn't have a notification yet`);
+            notification = [];
+        }
+        return notification;
+    }
   
 }
 

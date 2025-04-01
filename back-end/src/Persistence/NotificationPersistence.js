@@ -78,11 +78,11 @@ class NotificationPersistence {
     }
 
 
-    async get_msg_type(notif_id) {
+    async get_notif_details(notif_id) {
         const get_command = new GetCommand({
             TableName: "Notification",
             Key: {
-                id: notif_id,
+                notification_id: notif_id,
             },
         });
         const response = await this.#doc_client.send(get_command);
@@ -91,27 +91,30 @@ class NotificationPersistence {
         let type = response.Item.type;
         let from = response.Item.from;
         let to = response.Item.to;
+        let course = response.Item.course;
+        let status = response.Item.status;
         if (message === undefined || message === "") {
             throw new Error("Notification doesn't have a message");
         }
 
-        return { notification_id: notif_id, msg: message, type: type, from: from, to: to };
+        return { notification_id: notif_id, msg: message, type: type, from: from, to: to , course: course, status: status };
     }
 
-    async generate_new_notification(notif_id, msg, status, from, to, type) {
+    async generate_new_notification(notif_id, msg, status, from, to, course, type) {
         try {
             // add the new notification
             const put_command = new PutCommand({
                 TableName: "Notification",
                 Item: {
-                    id: notif_id,
+                    notification_id: notif_id,
                     message: msg,
                     from: from,
                     status: status,
                     to: to,
+                    course: course,
                     type: type,
                 },
-                ConditionExpression: "attribute_not_exists(id)",
+                ConditionExpression: "attribute_not_exists(notification_id)",
             });
 
             await this.#doc_client.send(put_command);
