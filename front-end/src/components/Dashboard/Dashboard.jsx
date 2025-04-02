@@ -134,6 +134,8 @@ const ChatRequestsTable = () => {
 
 
 const Dashboard = () => {
+  const userId = location.state?.userId || localStorage.getItem("userId");
+
   const role = location.state?.role || localStorage.getItem("role");
   const [activeTab, setActiveTab] = useState('courses');
 
@@ -187,7 +189,7 @@ const Dashboard = () => {
   {activeTab === 'courses' ? (
     <Courses />
   ) : role === 'student' ? (
-    <PastConversationsTable />
+    <PastConversationsTable userId={userId} />
   ) : (
     <ChatRequestsTable />
   )}

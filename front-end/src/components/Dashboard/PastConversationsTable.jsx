@@ -36,6 +36,7 @@ export const downloadList = async (userId) => {
         const res = await axios.get(`${url}/student-s3Url-list`, {
             params: { studentId: userId },
         });
+        console.log(res)
 
         const listURL = res.data.urlS3?.listURL;
         if (!listURL) {
@@ -45,7 +46,7 @@ export const downloadList = async (userId) => {
         // Fetch the XML response from S3
         const response = await axios.get(listURL);
         const xmlData = response.data;
-
+        console.log(response)
         // Convert XML to JSON
         const parser = new XMLParser();
         const jsonResult = parser.parse(xmlData);
@@ -69,10 +70,11 @@ export const downloadList = async (userId) => {
     }
 };
 
-const PastConversationsTable = (userId) => {
+const PastConversationsTable = ({ userId }) => {
     const [fileRequests, setFileRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    console.log(userId);
   
     useEffect(() => {
       const fetchFileRequests = async () => {
@@ -80,9 +82,9 @@ const PastConversationsTable = (userId) => {
           setLoading(true);
   
           // Fetch file list from S3
-          const studentId = userId; //"7c2b2198-4f7c-4fd7-907b-880ff31dc9cc"; 
-          const files = await downloadList(studentId);
-  
+          //const studentId ="7c2b2198-4f7c-4fd7-907b-880ff31dc9cc"; 
+          const files = await downloadList(userId);
+    
           setFileRequests(files);
         } catch (err) {
           setError("Failed to load file requests");
