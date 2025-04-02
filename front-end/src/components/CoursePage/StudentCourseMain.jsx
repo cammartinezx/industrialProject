@@ -2,7 +2,7 @@
 
 import Arrow from "../../assets/svg/Arrow.jsx";
 import { Link, useParams } from "react-router-dom";
-import { cardbg, check } from "../../assets/index.js";
+import { cardbg, chat, check, download } from "../../assets/index.js";
 import axios from "axios";
 import { url } from "../../constants/index.js";
 import { useEffect, useState } from "react";
@@ -22,11 +22,8 @@ export const fetchCourseById = async (courseId) => {
     throw new Error('Failed to fetch course details');
   }
 };
-/**
- * Fetch the user's name by email.
- * @param {string} user_id - The email of the user to fetch the name.
- * @returns {Promise<string>} - The user's name if successful.
- */
+
+
 export const fetchName = async (user_id) => {
   try {
     const response = await axios.post(`${url}/user/get-name`, { user_id: user_id });
@@ -38,7 +35,30 @@ export const fetchName = async (user_id) => {
 };
 
 
+export const downloadFile = async ( courseId, fileName) => {
 
+  try {
+    // Request a signed download URL from your backend
+    const res = await axios.get(`${url}/s3Url-download`, {
+      params: { fileName:`${courseId}/${fileName}`},
+    });
+
+    const downloadURL = res.data.urlS3?.downloadURL;
+    
+    if (!downloadURL) {
+      throw new Error("Failed to retrieve the file URL.");
+    }
+
+    console.log("Download URL:", downloadURL);
+
+    // Open the file in a new tab
+    window.open(downloadURL, "_blank");
+    
+  } catch (error) {
+    console.error("Download failed:", error);
+    alert("Failed to download material.");
+  }
+};
 
 
 
@@ -105,42 +125,71 @@ export const fetchName = async (user_id) => {
         </div>
   
         <div className="container relative z-2">
-          <div className="flex flex-col gap-6 mt-10 mb-6 w-full">
-            {units.map((unit, index) => (
-              <div
-                key={index}
-                className="group block relative bg-no-repeat bg-[length:100%_100%] w-full sm:max-w-[60%] md:max-w-[90rem] mx-auto"
-                style={{
-                  backgroundImage: `url(${
-                    index % 2 === 0
-                      ? "src/assets/course_cards/card-1.svg"
-                      : "src/assets/course_cards/card-2.svg"
-                  })`,
-                }}
-              >
-                <div className="flex justify-between items-center w-full px-6 py-4">
-                  <h5 className="h5 mt-7 mb-2">
-                    <span className="font-extrabold">Unit {index + 1} </span>
-                    <span className="ml-3">{unit}</span>
-                  </h5>
-                  <div className="flex items-center space-x-2">
-                    <Link to={`/chat/${courseId}/unit/${index+1}`} className="z-50">
-                      Start chat
-                    </Link>
-                    <Arrow className="w-6 h-6 text-white" />
-                  </div>
-                </div>
-  
-                <div className="absolute inset-0.5" style={{ clipPath: "url(#benefits)" }}>
-                  <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-25">
-                    <img src={cardbg} width={380} height={362} className="w-full h-full object-cover" alt="card background" />
-                  </div>
-                </div>
-              </div>
-            ))}
+  <div className="flex flex-col gap-6 mt-10 mb-6 w-full">
+    {units.map((unit, index) => (
+      <div
+        key={index}
+        className="block relative bg-no-repeat bg-[length:100%_100%] w-full sm:max-w-[60%] md:max-w-[90rem] mx-auto parent-hover-container" // Added class
+        style={{
+          backgroundImage: `url(${
+            index % 2 === 0
+              ? "src/assets/course_cards/card-1.svg"
+              : "src/assets/course_cards/card-2.svg"
+          })`,
+        }}
+      >
+        {/* Parent hover effect - always active when hovering parent or children */}
+        <div className="absolute inset-0 z-0 parent-hover-effect opacity-0 transition-opacity duration-300">
+          <img src={cardbg} width={380} height={362} className="w-full h-full object-cover" alt="card background" />
+        </div>
 
+        {/* Content */}
+        <div className="relative z-10 w-full px-6 py-4">
+          <div className="flex justify-between items-center w-full">
+            <h5 className="h5 mt-7 mb-2">
+              <span className="font-extrabold">Unit {index + 1} </span>
+              <span className="ml-3">{unit}</span>
+            </h5>
+
+            {/* Children with independent hover effects */}
+            <div className="flex items-center space-x-10">
+              {/* Download Icon with Tooltip */}
+              <div className="relative group">
+                <img 
+                  src={download} 
+                  width={30} 
+                  height={30} 
+                  className="cursor-pointer hover:opacity-90 transition-opacity" 
+                  onClick={() => downloadFile(courseId, unit)}
+                />
+                <span className="absolute left-1/2 -top-8 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded px-2 py-1 transition-opacity">
+                  Download
+                </span>
+              </div>
+
+              <Link 
+                to={`/chat/${courseId}/unit/${index+1}`} 
+                className="relative group"
+              >
+                <img 
+                  src={chat} 
+                  width={30} 
+                  height={40} 
+                  className="cursor-pointer hover:opacity-90 transition-opacity"  
+                />
+                <span className="absolute left-1/2 -top-8 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded px-2 py-1 transition-opacity">
+                  Chat
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
       </div>
     );
   };

@@ -86,3 +86,14 @@
 .-rotate-360 {
   @apply rotate-[-360deg];
 }
+
+/* Parent hover effect - activates when hovering parent OR children */
+.parent-hover-container:hover .parent-hover-effect {
+  opacity: 0.3 !important;
+}
+
+/* Ensure tooltips appear above parent hover effect */
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1 !important;
+  z-index: 20; /* Higher than parent hover */
+}

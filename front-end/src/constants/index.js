@@ -2,7 +2,6 @@ export const url = "http://localhost:3001"
 
 import {
   benefitIcon1,
- 
   cardbg,
   chromecast,
   disc02,

@@ -85,14 +85,7 @@ const Courses = () => {
         <p className="text-xl text-red-500 text-center">{error}</p>
       </div>
     );
-  // } else if (courses.length === 0) {
-  //   content = (
-  //     <div className="flex justify-center items-center h-64">
-  //       <p className="text-xl text-gray-500 text-center">
-  //         You are currently not enrolled in any courses.
-  //       </p>
-  //     </div>
-  //   );
+ 
   } else {
     content = (
       <div className="flex flex-wrap gap-10 mb-10n">
@@ -122,7 +115,7 @@ const Courses = () => {
 
             <div
               className="absolute inset-0.5 bg-n-8"
-              style={{ clipPath: 'url(#benefits)' }}
+              style={{ clipPath: '' }}
             >
               <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-25">
                 <img
