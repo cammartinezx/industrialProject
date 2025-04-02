@@ -20,7 +20,6 @@ const HeaderInstructor = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        // Replace with the actual user ID
         const userId = location.state?.userId || localStorage.getItem("userId");
   
         if (!userId) {
@@ -28,24 +27,56 @@ const HeaderInstructor = () => {
           return;
         }
   
-        // Fetch notifications from the API
         const response = await axios.get(`${url}/notification/get-notification/${userId}`);
         const notificationsData = response.data;
   
-        // Map the notifications to the required format
-        const formattedNotifications = notificationsData.map((notification) => ({
-          id: notification.notification_id,
-          studentName: notification.from, // Replace with actual student name if available
-          course: notification.course,
-          message: notification.msg,
-          time: "Just now", // Replace with actual time if available
-          read: notification.status === "read",
-          requestId: notification.notification_id, // Use notification_id as requestId
-        }));
+        const formattedNotifications = notificationsData.map((notification) => {
+          // Extract student name from the first word of the message
+          const studentName = notification.msg.split(' ')[0];
+          
+          // Calculate time difference with proper date parsing
+          let timeString = 'Just now';
+          try {
+            const notificationTime = new Date(notification.created_at);
+            if (!isNaN(notificationTime.getTime())) { // Check if date is valid
+              const now = new Date();
+              const timeDiff = now - notificationTime;
+              
+              if (timeDiff < 60000) { // Less than 1 minute
+                timeString = 'Just now';
+              } else if (timeDiff < 3600000) { // Less than 1 hour
+                const minutes = Math.floor(timeDiff / 60000);
+                timeString = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+              } else if (timeDiff < 86400000) { // Less than 1 day
+                const hours = Math.floor(timeDiff / 3600000);
+                timeString = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+              } else {
+                const days = Math.floor(timeDiff / 86400000);
+                if (!isNaN(days)) { // Check if days is a valid number
+                  timeString = `${days} day${days > 1 ? 's' : ''} ago`;
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Error parsing date:', error);
+            timeString = 'Just now';
+          }
+
+          return {
+            id: notification.notification_id,
+            studentName: studentName,
+            from: notification.from,
+            course: notification.course,
+            message: notification.msg,
+            time: timeString,
+            read: notification.status === "read",
+            requestId: notification.notification_id,
+            created_at: notification.created_at
+          };
+        });
   
         setNotifications(formattedNotifications);
   
-        // Count unread notifications
         const unreadCount = formattedNotifications.filter((n) => !n.read).length;
         setUnreadCount(unreadCount);
       } catch (error) {
@@ -53,7 +84,14 @@ const HeaderInstructor = () => {
       }
     };
   
+    // Initial fetch
     fetchNotifications();
+    
+    // Set up polling every minute to update notifications
+    const interval = setInterval(fetchNotifications, 60000);
+    
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   const toggleNavigation = () => {
@@ -81,16 +119,11 @@ const HeaderInstructor = () => {
     }
   };
 
-  const handleViewRequest = (requestId) => {
+  const handleViewRequest = (requestId, course, from) => {
     // Close notifications popup
     setShowNotifications(false);
-    // Navigate to dashboard chat requests with the specific request highlighted
-    navigate('/dashboard', { 
-      state: { 
-        activeTab: 'chatRequests',
-        highlightRequest: requestId 
-      } 
-    });
+    // Navigate to the join-chat URL with course and notification.from
+    navigate(`/join-chat/${course}/${from}`);
   };
 
   return (
@@ -173,7 +206,7 @@ const HeaderInstructor = () => {
                       <p className="text-sm text-n-2 mt-1">{notification.course}</p>
                       <p className="text-sm text-n-2 mt-1">{notification.message}</p>
                       <button 
-                        onClick={() => handleViewRequest(notification.requestId)} // Use requestId for navigation logic
+                        onClick={() => handleViewRequest(notification.requestId, notification.course, notification.from)}
                         className="mt-2 text-xs text-purple-500 hover:text-purple-400"
                       >
                         View Request
