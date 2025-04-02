@@ -30,6 +30,7 @@ import twitter from "./socials/twitter.svg";
 import notification1 from "./notification/image-1.png";
 import download from "./download.svg";
 import chat from "./chat.svg";
+import messagePurple from "./icon-1.svg";
 export {
   chat,
   download,
@@ -62,6 +63,7 @@ export {
   instagram,
   telegram,
   twitter,
-  notification1
+  notification1,
+  messagePurple
 
 };

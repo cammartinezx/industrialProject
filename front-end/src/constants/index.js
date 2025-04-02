@@ -8,6 +8,8 @@ import {
   file02,
   homeSmile,
 
+  messagePurple,
+
   plusSquare,
   recording01,
   recording03,
@@ -141,7 +143,7 @@ export const edunovaServicesIcons = [
   sliders04,
 ];
 
-export const cardDesign = [cardbg, cardbg];
+export const cardDesign = [messagePurple, cardbg];
 
 
 export const majors = [
