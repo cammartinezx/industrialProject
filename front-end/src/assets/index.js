@@ -4,7 +4,6 @@ import edunovaSymbol from "./edunova-symbol.svg";
 import edunovaWhiteSymbol from "./edunova-symbol-white.svg";
 import play from "./play.svg";
 import gradient from "./gradient.png";
-import smallSphere from "./4-small.png";
 import grid from "./grid.png";
 import check2 from "./check-02.svg";
 import loading1 from "./loading-01.svg";
@@ -75,8 +74,12 @@ import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
 import unitCard1 from "./unit_cards/unit-cards-1.svg";
 import unitCard2 from "./unit_cards/unit-cards-2.svg";
+import download from "./download.svg";
+import chat from "./chat.svg";
 
 export {
+  chat,
+  download,
   edunova,
   check,
   check2,
@@ -85,7 +88,6 @@ export {
   edunovaWhiteSymbol,
   play,
   gradient,
-  smallSphere,
   grid,
   yourlogo,
   homeSmile,
