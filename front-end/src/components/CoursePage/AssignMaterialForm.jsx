@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
 import axios from "axios";
 import { url } from "../../constants";
@@ -24,7 +25,7 @@ class AssignMaterialForm extends React.Component {
         e.preventDefault();
 
         const { title, file } = this.state;
-        const { courseId } = this.props; 
+        const { courseId } = this.props; // Get courseId from props
 
         if (!title || !file) {
             alert("Please enter a title and upload a file.");
@@ -32,6 +33,14 @@ class AssignMaterialForm extends React.Component {
         }
 
         try {
+            // 1️⃣ Fetch the instructor ID using the courseId
+            const instructorResponse = await axios.get(`${url}/course/${courseId}/get-instructor`);
+            const instructorId = instructorResponse.data.instructor_id;
+    
+            if (!instructorId) {
+                throw new Error("Failed to fetch instructor ID.");
+            }
+
             // 1️⃣ Get a pre-signed URL from your backend
             const res = await axios.get(`${url}/s3Url`, {
                 params: { fileName: `${courseId}/${title}`, fileType: file.type},
@@ -61,6 +70,19 @@ class AssignMaterialForm extends React.Component {
             });
 
             console.log("Unit added successfully!");
+
+            // 5️⃣ Send a notification to students
+            const response = await axios.post(`${url}/notification/create-new-notification`, {
+                from: instructorId, // Pass the instructor's ID
+                type: "upload-new-material",
+                course: courseId,
+            });
+
+            if (response.status === 200) {
+                alert("You upload new material successfully!");
+            } else {
+                alert("Failed to upload new material. Please try again.");
+            }
 
             this.props.closeModal(); // Close modal after success
         } else {

@@ -119,6 +119,26 @@ const ChatStudent = () => {
       setIsTyping(false);
     }
   };
+
+  // Function to handle the "Request Help" button click
+  const handleRequestHelp = async () => {
+    try {
+      const response = await axios.post(`${url}/notification/create-new-notification`, {
+        from: userId,
+        type: "help-request",
+        course: courseId,
+      });
+
+      if (response.status === 200) {
+        alert("Help request sent to the instructor successfully!");
+      } else {
+        alert("Failed to send help request. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending help request:", error);
+      alert("An error occurred while sending the help request.");
+    }
+  };
   
   const handleDownloadPDF = async () => {
     const element = document.getElementById("course-content");
@@ -218,10 +238,23 @@ const ChatStudent = () => {
       {title}
     </h2>
 
-    {/* Right: Download Button */}
-    <button onClick={handleDownloadPDF} className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold">
+    <div className="flex space-x-4">
+    {/* Download Button */}
+    <button
+      onClick={handleDownloadPDF}
+      className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold"
+    >
       Download
     </button>
+
+    {/* Request Help Button */}
+    <button
+      onClick={handleRequestHelp}
+      className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold"
+    >
+      Request Help
+    </button>
+</div>
   </div>
 </div>
 

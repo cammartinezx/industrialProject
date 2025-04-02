@@ -24,6 +24,10 @@ router.get('/:course_id/get-students', async (req, res) => {
     course_handler.get_students_in_course(req, res);
 });
 
+router.get('/:course_id/get-instructor', async (req, res) => {
+    course_handler.get_instructor_of_course(req, res);
+});
+
 router.use("/", (req, res) => {
     res.status(200).json({ Message: "Welcome to the Course paths" });
 });

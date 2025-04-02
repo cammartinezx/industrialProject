@@ -6,6 +6,8 @@ import { edunova } from "../../assets";
 import { navigationInstructor } from "../../constants";
 import Button from "../design/Button";
 import { HamburgerMenu } from "../design/Header";
+import axios from "axios";
+import { url } from "../../constants";
 
 const HeaderInstructor = () => {
   const pathname = useLocation();
@@ -15,35 +17,42 @@ const HeaderInstructor = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Mock data - replace with actual API call
   useEffect(() => {
     const fetchNotifications = async () => {
-      // Simulate API call
-      setTimeout(() => {
-        setNotifications([
-          {
-            id: 1,
-            studentName: "John Doe",
-            course: "Mathematics 101",
-            message: "Requested help with Unit 2",
-            time: "2 mins ago",
-            read: false,
-            requestId: "req123" // Add request ID for reference
-          },
-          {
-            id: 2,
-            studentName: "Jane Smith",
-            course: "Computer Science",
-            message: "Has a question about the assignment",
-            time: "15 mins ago",
-            read: false,
-            requestId: "req456"
-          }
-        ]);
-        setUnreadCount(2);
-      }, 500);
+      try {
+        // Replace with the actual user ID
+        const userId = location.state?.userId || localStorage.getItem("userId");
+  
+        if (!userId) {
+          console.error("User ID is not available.");
+          return;
+        }
+  
+        // Fetch notifications from the API
+        const response = await axios.get(`${url}/notification/get-notification/${userId}`);
+        const notificationsData = response.data;
+  
+        // Map the notifications to the required format
+        const formattedNotifications = notificationsData.map((notification) => ({
+          id: notification.notification_id,
+          studentName: notification.from, // Replace with actual student name if available
+          course: notification.course,
+          message: notification.msg,
+          time: "Just now", // Replace with actual time if available
+          read: notification.status === "read",
+          requestId: notification.notification_id, // Use notification_id as requestId
+        }));
+  
+        setNotifications(formattedNotifications);
+  
+        // Count unread notifications
+        const unreadCount = formattedNotifications.filter((n) => !n.read).length;
+        setUnreadCount(unreadCount);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
     };
-
+  
     fetchNotifications();
   }, []);
 
@@ -152,7 +161,7 @@ const HeaderInstructor = () => {
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <div 
-                      key={notification.id}
+                      key={notification.id} // Keep the key for React's reconciliation but don't display it
                       className={`p-4 border-b border-n-6 hover:bg-n-7 transition-colors ${
                         !notification.read ? "bg-n-7/50" : ""
                       }`}
@@ -164,7 +173,7 @@ const HeaderInstructor = () => {
                       <p className="text-sm text-n-2 mt-1">{notification.course}</p>
                       <p className="text-sm text-n-2 mt-1">{notification.message}</p>
                       <button 
-                        onClick={() => handleViewRequest(notification.requestId)}
+                        onClick={() => handleViewRequest(notification.requestId)} // Use requestId for navigation logic
                         className="mt-2 text-xs text-purple-500 hover:text-purple-400"
                       >
                         View Request
@@ -177,7 +186,7 @@ const HeaderInstructor = () => {
                   </div>
                 )}
               </div>
-              
+                
               <div className="p-2 border-t border-n-6 text-center">
                 <button className="text-xs text-purple-500 hover:text-purple-400">
                   View All Notifications

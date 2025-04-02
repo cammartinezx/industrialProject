@@ -135,6 +135,19 @@ class CoursePersistence {
         const response = await this.#doc_client.send(get_command);
         return response.Item?.student_list || [];
     }
+
+    async get_instructor(course_id) {
+        const get_command = new GetCommand({
+            TableName: this.table_name,
+            Key: {
+                course_id: course_id,
+            },
+            ProjectionExpression: "instructor",
+        });
+        
+        const response = await this.#doc_client.send(get_command);
+        return response.Item?.instructor || null;
+    }
 }
 
 module.exports = CoursePersistence;

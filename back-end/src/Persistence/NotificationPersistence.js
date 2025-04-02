@@ -132,7 +132,7 @@ class NotificationPersistence {
         const update_command = new UpdateCommand({
             TableName: "Notification",
             Key: {
-                id: notif_id,
+                notification_id: notif_id,
             },
             UpdateExpression: "SET #status = :new_status",
             ExpressionAttributeNames: {

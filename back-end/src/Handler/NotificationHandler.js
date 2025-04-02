@@ -77,13 +77,15 @@ class NotificationHandler {
             const notif_id = uuidv4();
             const status = "unread";
             const from = request.body.from;
-            let to = request.body.to || "";
-            to = [to];
+            let to = [];
             const type = request.body.type;
             const course = request.body.course;
 
             if (type === "upload-new-material") {
                 to = await this.#course_persistence.get_students_in_course(course);
+            }
+            if (type === "help-request") {
+                to.push(await this.#course_persistence.get_instructor(course));
             }
 
             try {
@@ -106,7 +108,7 @@ class NotificationHandler {
             let item = await this.#user_persistence.get_user(from);
             const sender_name = item.name;
             const msg = this.generate_message(sender_name, type, course);
-
+            
             try {
                 validateString(msg);
             } catch (error) {
@@ -145,7 +147,6 @@ class NotificationHandler {
                 return response.status(404).json({ message: "Notification not found" });
             } else {
                 for (let i = 0; i < id_list.length; i++) {
-                    console.log("hello");
                     const notification = await this.#notification_persistence.get_notif_details(id_list[i]);
                     if (notification === null) {
                         return response.status(404).json({ message: "Notification not found" });

@@ -111,6 +111,23 @@ class CourseHandler {
             return response.status(500).json({ message: error.message });
         }
     }
+
+    async get_instructor_of_course(request, response) {
+        const { course_id } = request.params;
+        try {
+            // Fetch the instructor id from the course
+            const instructor_id = await this.#course_persistence.get_instructor(course_id);
+            
+            if (!instructor_id) {
+                return response.status(404).json({ message: "Instructor not found for this course" });
+            }
+
+            return response.status(200).json({ instructor_id });
+
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = CourseHandler;
