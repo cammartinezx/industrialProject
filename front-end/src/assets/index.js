@@ -27,7 +27,7 @@ import facebook from "./socials/facebook.svg";
 import instagram from "./socials/instagram.svg";
 import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
-
+import notification1 from "./notification/image-1.png";
 import download from "./download.svg";
 import chat from "./chat.svg";
 export {
@@ -62,5 +62,6 @@ export {
   instagram,
   telegram,
   twitter,
+  notification1
 
 };
