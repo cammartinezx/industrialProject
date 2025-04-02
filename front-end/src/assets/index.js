@@ -7,7 +7,6 @@ import gradient from "./gradient.png";
 import grid from "./grid.png";
 import check2 from "./check-02.svg";
 import loading1 from "./loading-01.svg";
-import yourlogo from "./yourlogo.svg";
 import homeSmile from "./home-smile.svg";
 import file02 from "./file-02.svg";
 import searchMd from "./search-md.svg";
@@ -19,64 +18,18 @@ import chromecast from "./chrome-cast.svg";
 import sliders04 from "./sliders-04.svg";
 import loading from "./loading.png";
 import background from "./background.jpg";
-
-import curve from "./hero/curve.png";
-import robot from "./hero/robot.jpg";
-import heroBackground from "./hero/hero-background.jpg";
-
-import curve1 from "./collaboration/curve-1.svg";
-import curve2 from "./collaboration/curve-2.svg";
-import discord from "./collaboration/discord.png";
-import figma from "./collaboration/figma.png";
-import framer from "./collaboration/framer.png";
-import notion from "./collaboration/notion.png";
-import photoshop from "./collaboration/photoshop.png";
-import protopie from "./collaboration/protopie.png";
-import raindrop from "./collaboration/raindrop.png";
-import slack from "./collaboration/slack.png";
-
-import service1 from "./services/service-1.png";
-import service2 from "./services/service-2.png";
-import service3 from "./services/service-3.png";
-
-import lines from "./pricing/lines.svg";
-import stars from "./pricing/stars.svg";
-
-import coins from "./roadmap/coins.png";
-import done from "./roadmap/done.svg";
-import hero from "./roadmap/hero.png";
-import roadmap1 from "./roadmap/image-1.png";
-import roadmap2 from "./roadmap/image-2.png";
-import roadmap3 from "./roadmap/image-3.png";
-import roadmap4 from "./roadmap/image-4.png";
-import undone from "./roadmap/undone.svg";
-
-import notification1 from "./notification/image-1.png";
-import notification2 from "./notification/image-2.png";
-import notification3 from "./notification/image-3.png";
-import notification4 from "./notification/image-4.png";
-
-import benefitCard1 from "./course_cards/card-1.svg";
-import benefitCard2 from "./course_cards/card-2.svg";
-import benefitCard3 from "./course_cards/card-3.svg";
-import benefitCard4 from "./course_cards/card-4.svg";
-import benefitCard5 from "./course_cards/card-5.svg";
-import benefitCard6 from "./course_cards/card-6.svg";
-import benefitIcon1 from "./course_cards/icon-1.svg";
-import benefitIcon2 from "./course_cards/icon-2.svg";
-import benefitIcon3 from "./course_cards/icon-3.svg";
-import benefitIcon4 from "./course_cards/icon-4.svg";
-import cardbg from "./course_cards/cards-bg.png";
+import curve from "./landing/curve.png";
+import robot from "./landing/robot.jpg";
+import heroBackground from "./landing/hero-background.jpg";
+import cardbg from "./cards-bg.png";
 import discordBlack from "./socials/discord.svg";
 import facebook from "./socials/facebook.svg";
 import instagram from "./socials/instagram.svg";
 import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
-import unitCard1 from "./unit_cards/unit-cards-1.svg";
-import unitCard2 from "./unit_cards/unit-cards-2.svg";
+
 import download from "./download.svg";
 import chat from "./chat.svg";
-
 export {
   chat,
   download,
@@ -89,7 +42,6 @@ export {
   play,
   gradient,
   grid,
-  yourlogo,
   homeSmile,
   file02,
   searchMd,
@@ -104,49 +56,11 @@ export {
   curve,
   robot,
   heroBackground,
-  curve1,
-  curve2,
-  discord,
-  figma,
-  framer,
-  notion,
-  photoshop,
-  protopie,
-  raindrop,
-  slack,
-  service1,
-  service2,
-  service3,
-  lines,
-  stars,
-  coins,
-  done,
-  hero,
-  roadmap1,
-  roadmap2,
-  roadmap3,
-  roadmap4,
-  undone,
-  notification1,
-  notification2,
-  notification3,
-  notification4,
-  benefitCard1,
-  benefitCard2,
-  benefitCard3,
-  benefitCard4,
-  benefitCard5,
-  benefitCard6,
-  benefitIcon1,
-  benefitIcon2,
-  benefitIcon3,
-  benefitIcon4,
   cardbg,
   discordBlack,
   facebook,
   instagram,
   telegram,
   twitter,
-  unitCard1, 
-  unitCard2 
+
 };

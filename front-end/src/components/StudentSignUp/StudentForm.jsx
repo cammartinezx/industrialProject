@@ -1,6 +1,6 @@
 import { heroBackground } from "../../assets";
 
-import { BackgroundCircles } from "../design/Hero";
+import { BackgroundCircles } from "../design/LandingPageDesign";
 import { useRef } from "react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";

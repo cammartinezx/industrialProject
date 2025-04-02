@@ -1,6 +1,6 @@
 import { heroBackground,} from "../../assets";
 import Button from "../design/Button";
-import { BackgroundCircles, BottomLine, Gradient } from "../design/Hero";
+import { BackgroundCircles, BottomLine, Gradient } from "../design/LandingPageDesign";
 import { useRef } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
