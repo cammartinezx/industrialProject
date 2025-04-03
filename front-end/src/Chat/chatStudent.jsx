@@ -286,21 +286,21 @@ const ChatStudent = () => {
     </h2>
 
     <div className="flex space-x-4">
-    {/* Download Button */}
-    <button
-      onClick={handleDownloadPDF}
-      className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold"
-    >
-      Download
-    </button>
+  {/* Download Button */}
+  <button
+    onClick={handleDownloadPDF}
+    className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-4 lg:-mr-0.25 lg:text-xs lg:font-semibold border border-n-1 px-3 py-0.25 rounded-lg transition-colors hover:border-color-1"
+  >
+    Download
+  </button>
 
-    {/* Request Help Button */}
-    <button
-      onClick={handleRequestHelp}
-      className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold"
-    >
-      Request Help
-    </button>
+  {/* Request Help Button */}
+  <button
+    onClick={handleRequestHelp}
+    className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-4 lg:-mr-0.25 lg:text-xs lg:font-semibold border border-n-1 px-3 py-0.25 rounded-lg transition-colors hover:border-color-1"
+  >
+    Request Help
+  </button>
 </div>
   </div>
 </div>
@@ -326,7 +326,7 @@ const ChatStudent = () => {
           {isTyping && (
             <div className="flex items-center text-gray-500 italic">
               <div className="animate-spin h-4 w-4 border-2 border-gray-400 border-t-transparent rounded-full mr-2"></div>
-              Chatbot is thinking...
+              Nova is thinking...
             </div>
           )}
         </div>
