@@ -8,6 +8,7 @@ import html2pdf from "html2pdf.js";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { url } from "../constants";
+import logo from "../assets/edunova.svg";
 
 
 const ChatStudent = () => {
@@ -141,38 +142,84 @@ const ChatStudent = () => {
   };
   
   const handleDownloadPDF = async () => {
-    const element = document.getElementById("course-content");
-  
     try {
-      const pdfBlob = await html2pdf()
-        .set({
-          margin: 10,
-          filename: courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(element)
-        .toPdf()
-        .output('blob'); 
-  
-      // 1️⃣ Save the PDF to the device
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      const a = document.createElement("a");
-      a.href = pdfUrl;
-      a.download = courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(pdfUrl); // Clean up
-  
-      // 2️⃣ Upload the PDF to S3
-      await storePDF(pdfBlob);
-  
+        const tempElement = document.createElement("div");
+        tempElement.style.textAlign = "left";
+        tempElement.style.padding = "20px";
+        tempElement.style.fontFamily = "Arial, sans-serif";
+        tempElement.style.width = "100%"; // Ensuring no text cut-off
+        tempElement.style.maxWidth = "210mm"; // A4 width
+        tempElement.style.wordWrap = "break-word";
+        tempElement.style.whiteSpace = "pre-wrap";
+
+        tempElement.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <img src="${logo}" style="width: 150px;" />
+                <h1 style="font-size: 24px; font-weight: bold; margin: 0;">${title}</h1>
+            </div>
+            <hr style="margin: 10px 0; border-top: 2px solid #000;" />
+            <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Unit Conversation</h2>
+        `;
+
+        messages.forEach((msg) => {
+            const messageDiv = document.createElement("div");
+            messageDiv.style.margin = "5px 0";
+            messageDiv.style.padding = "10px";
+            messageDiv.style.borderRadius = "8px";
+            messageDiv.style.display = "block";
+            messageDiv.style.pageBreakInside = "avoid"; 
+            messageDiv.style.backgroundColor = msg.sender === "user" ? "#2e2a41" : "#ada8c3";
+            messageDiv.style.color = msg.sender === "user" ? "#fff" : "#000";
+            messageDiv.innerHTML = `<strong>${msg.sender === "user" ? "You:" : "Nova:"}</strong> ${msg.text}`;
+
+            tempElement.appendChild(messageDiv);
+        });
+
+        document.body.appendChild(tempElement);
+
+        const pdfBlob = await html2pdf()
+            .set({
+                margin: [10, 10, 20, 10], // Bottom margin increased for page number
+                filename: courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`,
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+            })
+            .from(tempElement)
+            .toPdf()
+            .get('pdf')
+            .then(pdf => {
+                const totalPages = pdf.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    pdf.setPage(i);
+                    pdf.setFontSize(10);
+                    pdf.text(`Page ${i} of ${totalPages}`, pdf.internal.pageSize.width / 2, pdf.internal.pageSize.height - 10, { align: 'center' });
+                }
+                return pdf.output('blob');
+            });
+
+        document.body.removeChild(tempElement);
+
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const a = document.createElement("a");
+        a.href = pdfUrl;
+        a.download = courseId && title ? `${courseId}-${title}.pdf` : `Course-Details.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(pdfUrl);
+
+        await storePDF(pdfBlob);
     } catch (error) {
-      console.error("Error generating PDF:", error);
+        console.error("Error generating PDF:", error);
     }
-  };
+};
+
+
+
+
+
   
 
   const storePDF = async (pdfBlob) => {
