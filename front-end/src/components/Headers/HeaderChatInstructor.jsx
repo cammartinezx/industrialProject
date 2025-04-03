@@ -1,8 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-
-import { navigationChatStudent} from "../../constants";
-
+import { navigationChatStudent } from "../../constants";
 import MenuSvg from "../../assets/svg/MenuSvg";
 import { HamburgerMenu } from "../design/Header";
 import { useState } from "react";
@@ -24,7 +22,6 @@ const HeaderChatInstructor = () => {
 
   const handleClick = () => {
     if (!openNavigation) return;
-
     enablePageScroll();
     setOpenNavigation(false);
   };
@@ -41,7 +38,6 @@ const HeaderChatInstructor = () => {
             openNavigation ? "flex" : "hidden"
           } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:bg-transparent w-full`}
         >
-          {/* Make sure the items take up full space with flex-grow */}
           <div className="relative z-2 flex flex-1 justify-between lg:flex-row">
             {navigationChatStudent.map((item) => (
               <a
@@ -64,10 +60,6 @@ const HeaderChatInstructor = () => {
           <HamburgerMenu />
         </nav>
   
-        <Button className="hidden lg:flex" href="/">
-          Get Help
-        </Button>
-  
         <Button
           className="ml-auto lg:hidden"
           px="px-3"
@@ -78,10 +70,6 @@ const HeaderChatInstructor = () => {
       </div>
     </div>
   );
-  
-  
-  
-  
 };
 
 export default HeaderChatInstructor;
