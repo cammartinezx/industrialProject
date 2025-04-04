@@ -24,7 +24,7 @@ const Header = () => {
         { id: "about", threshold: 0.5 }
       ];
       
-      const scrollPosition = window.scrollY + 100; // Adding offset for header height
+      const scrollPosition = window.scrollY + 100;
       const windowHeight = window.innerHeight;
 
       for (const section of sections) {
@@ -34,7 +34,6 @@ const Header = () => {
           const sectionTop = offsetTop;
           const sectionBottom = offsetTop + offsetHeight;
           
-          // Calculate visible percentage
           const visibleTop = Math.max(0, scrollPosition - sectionTop);
           const visibleBottom = Math.min(offsetHeight, scrollPosition + windowHeight - sectionTop);
           const visibleHeight = visibleBottom - visibleTop;
@@ -67,7 +66,7 @@ const Header = () => {
     const section = document.getElementById(sectionId);
     if (section) {
       window.scrollTo({
-        top: section.offsetTop - 80, // Adjust for header height
+        top: section.offsetTop - 80,
         behavior: "smooth"
       });
     }
@@ -90,7 +89,6 @@ const Header = () => {
     item.title === "Features" || item.title === "About Us"
   );
 
-  // Map navigation items to section IDs
   const getSectionId = (title) => {
     switch(title) {
       case "Features": return "features";
@@ -105,59 +103,63 @@ const Header = () => {
         openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
       }`}
     >
-      <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a 
-          className="block w-[12rem] xl:mr-8" 
-          href="#hero" 
-          onClick={(e) => handleNavigationClick(e, "hero")}
-        >
-          <img src={edunova} width={190} height={40} alt="EduNova" />
-        </a>
+      <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
+        <div className="flex items-center">
+          <a 
+            className="block w-[12rem] xl:mr-8" 
+            href="#hero" 
+            onClick={(e) => handleNavigationClick(e, "hero")}
+          >
+            <img src={edunova} width={190} height={40} alt="EduNova" />
+          </a>
+        </div>
 
-        <nav
-          className={`${
-            openNavigation ? "flex" : "hidden"
-          } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent`}
-        >
-          <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
-            {filteredNavigation.map((item) => {
-              const sectionId = getSectionId(item.title);
-              const isActive = activeSection === sectionId;
-              
-              return (
-                <a
-                  key={item.id}
-                  href={item.url}
-                  onClick={(e) => handleNavigationClick(e, sectionId)}
-                  className={`block relative font-code text-2xl uppercase transition-colors hover:text-color-1 ${
-                    item.onlyMobile ? "lg:hidden" : ""
-                  } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${
-                    isActive
-                      ? "text-color-1 lg:text-color-1 lg:bg-n-7/50 lg:rounded-lg lg:px-4 lg:py-2"
-                      : "text-n-1 lg:text-n-1/50"
-                  } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
-                >
-                  {item.title}
-                  {isActive && (
-                    <span className="hidden lg:block absolute -bottom-1 left-0 right-0 h-0.5 bg-color-1" />
-                  )}
-                </a>
-              );
-            })}
-          </div>
+        <div className="flex items-center">
+          <nav
+            className={`${
+              openNavigation ? "flex" : "hidden"
+            } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent`}
+          >
+            <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
+              {filteredNavigation.map((item) => {
+                const sectionId = getSectionId(item.title);
+                const isActive = activeSection === sectionId;
+                
+                return (
+                  <a
+                    key={item.id}
+                    href={item.url}
+                    onClick={(e) => handleNavigationClick(e, sectionId)}
+                    className={`block relative font-code text-2xl uppercase transition-colors hover:text-color-1 ${
+                      item.onlyMobile ? "lg:hidden" : ""
+                    } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${
+                      isActive
+                        ? "text-color-1 lg:text-color-1 lg:bg-n-7/50 lg:rounded-lg lg:px-4 lg:py-2"
+                        : "text-n-1 lg:text-n-1/50"
+                    } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
+                  >
+                    {item.title}
+                    {isActive && (
+                      <span className="hidden lg:block absolute -bottom-1 left-0 right-0 h-0.5 bg-color-1" />
+                    )}
+                  </a>
+                );
+              })}
+            </div>
 
-          <HamburgerMenu />
-        </nav>
+            <HamburgerMenu />
+          </nav>
 
-        <ButtonGradient />
+          <ButtonGradient />
 
-        <Button
-          className="ml-auto lg:hidden"
-          px="px-3"
-          onClick={toggleNavigation}
-        >
-          <MenuSvg openNavigation={openNavigation} />
-        </Button>
+          <Button
+            className="ml-auto lg:hidden"
+            px="px-3"
+            onClick={toggleNavigation}
+          >
+            <MenuSvg openNavigation={openNavigation} />
+          </Button>
+        </div>
       </div>
     </div>
   );
