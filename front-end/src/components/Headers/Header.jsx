@@ -5,12 +5,52 @@ import { navigation } from "../../constants";
 import Button from "../design/Button";
 import MenuSvg from "../../assets/svg/MenuSvg";
 import { HamburgerMenu } from "../design/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ButtonGradient from "../../assets/svg/ButtonGradient";
 
 const Header = () => {
   const location = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isScrolling) return;
+
+      const sections = [
+        { id: "hero", threshold: 0.5 },
+        { id: "features", threshold: 0.5 },
+        { id: "about", threshold: 0.5 }
+      ];
+      
+      const scrollPosition = window.scrollY + 100; // Adding offset for header height
+      const windowHeight = window.innerHeight;
+
+      for (const section of sections) {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          const sectionTop = offsetTop;
+          const sectionBottom = offsetTop + offsetHeight;
+          
+          // Calculate visible percentage
+          const visibleTop = Math.max(0, scrollPosition - sectionTop);
+          const visibleBottom = Math.min(offsetHeight, scrollPosition + windowHeight - sectionTop);
+          const visibleHeight = visibleBottom - visibleTop;
+          const visibleRatio = visibleHeight / offsetHeight;
+
+          if (visibleRatio >= section.threshold) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isScrolling]);
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -22,17 +62,41 @@ const Header = () => {
     }
   };
 
-  const handleClick = () => {
-    if (!openNavigation) return;
-    enablePageScroll();
-    setOpenNavigation(false);
+  const scrollToSection = (sectionId) => {
+    setIsScrolling(true);
+    const section = document.getElementById(sectionId);
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop - 80, // Adjust for header height
+        behavior: "smooth"
+      });
+    }
+
+    setTimeout(() => {
+      setIsScrolling(false);
+    }, 1000);
   };
 
-  // Check if current path matches navigation item
-  const isActive = (url) => {
-    return location.pathname === url || 
-           (url === '/' && location.pathname === '/') ||
-           (url !== '/' && location.pathname.startsWith(url));
+  const handleNavigationClick = (e, sectionId) => {
+    e.preventDefault();
+    scrollToSection(sectionId);
+    if (openNavigation) {
+      enablePageScroll();
+      setOpenNavigation(false);
+    }
+  };
+
+  const filteredNavigation = navigation.filter(item => 
+    item.title === "Features" || item.title === "About Us"
+  );
+
+  // Map navigation items to section IDs
+  const getSectionId = (title) => {
+    switch(title) {
+      case "Features": return "features";
+      case "About Us": return "about";
+      default: return "hero";
+    }
   };
 
   return (
@@ -42,7 +106,11 @@ const Header = () => {
       }`}
     >
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a className="block w-[12rem] xl:mr-8" href="#hero">
+        <a 
+          className="block w-[12rem] xl:mr-8" 
+          href="#hero" 
+          onClick={(e) => handleNavigationClick(e, "hero")}
+        >
           <img src={edunova} width={190} height={40} alt="EduNova" />
         </a>
 
@@ -52,40 +120,36 @@ const Header = () => {
           } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent`}
         >
           <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
-            {navigation.map((item) => (
-              <a
-                key={item.id}
-                href={item.url}
-                onClick={handleClick}
-                className={`block relative font-code text-2xl uppercase transition-colors hover:text-color-1 ${
-                  item.onlyMobile ? "lg:hidden" : ""
-                } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${
-                  isActive(item.url) 
-                    ? "text-color-1 lg:text-color-1 lg:bg-n-7/50 lg:rounded-lg lg:px-4 lg:py-2"
-                    : "text-n-1 lg:text-n-1/50"
-                } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
-              >
-                {item.title}
-                {isActive(item.url) && (
-                  <span className="hidden lg:block absolute -bottom-1 left-0 right-0 h-0.5 bg-color-1" />
-                )}
-              </a>
-            ))}
+            {filteredNavigation.map((item) => {
+              const sectionId = getSectionId(item.title);
+              const isActive = activeSection === sectionId;
+              
+              return (
+                <a
+                  key={item.id}
+                  href={item.url}
+                  onClick={(e) => handleNavigationClick(e, sectionId)}
+                  className={`block relative font-code text-2xl uppercase transition-colors hover:text-color-1 ${
+                    item.onlyMobile ? "lg:hidden" : ""
+                  } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${
+                    isActive
+                      ? "text-color-1 lg:text-color-1 lg:bg-n-7/50 lg:rounded-lg lg:px-4 lg:py-2"
+                      : "text-n-1 lg:text-n-1/50"
+                  } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
+                >
+                  {item.title}
+                  {isActive && (
+                    <span className="hidden lg:block absolute -bottom-1 left-0 right-0 h-0.5 bg-color-1" />
+                  )}
+                </a>
+              );
+            })}
           </div>
 
           <HamburgerMenu />
         </nav>
 
-        <a
-          href="/signup"
-          className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
-        >
-          Sign Up
-        </a>
-        <Button className="hidden lg:flex" href="/login">
-          Log In
-        </Button>
-        <ButtonGradient/>
+        <ButtonGradient />
 
         <Button
           className="ml-auto lg:hidden"

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import { Bell, Menu, X } from "lucide-react";
+import { Bell, Menu, X, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { edunova } from "../../assets";
 import { navigationInstructor } from "../../constants";
@@ -20,7 +20,6 @@ const HeaderInstructor = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        // Replace with the actual user ID
         const userId = location.state?.userId || localStorage.getItem("userId");
   
         if (!userId) {
@@ -28,24 +27,53 @@ const HeaderInstructor = () => {
           return;
         }
   
-        // Fetch notifications from the API
         const response = await axios.get(`${url}/notification/get-notification/${userId}`);
         const notificationsData = response.data;
   
-        // Map the notifications to the required format
-        const formattedNotifications = notificationsData.map((notification) => ({
-          id: notification.notification_id,
-          studentName: notification.from, // Replace with actual student name if available
-          course: notification.course,
-          message: notification.msg,
-          time: "Just now", // Replace with actual time if available
-          read: notification.status === "read",
-          requestId: notification.notification_id, // Use notification_id as requestId
-        }));
+        const formattedNotifications = notificationsData.map((notification) => {
+          const studentName = notification.msg.split(' ')[0];
+          
+          let timeString = 'Just now';
+          try {
+            const notificationTime = new Date(notification.created_at);
+            if (!isNaN(notificationTime.getTime())) {
+              const now = new Date();
+              const timeDiff = now - notificationTime;
+              
+              if (timeDiff < 60000) {
+                timeString = 'Just now';
+              } else if (timeDiff < 3600000) {
+                const minutes = Math.floor(timeDiff / 60000);
+                timeString = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+              } else if (timeDiff < 86400000) {
+                const hours = Math.floor(timeDiff / 3600000);
+                timeString = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+              } else {
+                const days = Math.floor(timeDiff / 86400000);
+                if (!isNaN(days)) {
+                  timeString = `${days} day${days > 1 ? 's' : ''} ago`;
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Error parsing date:', error);
+            timeString = 'Just now';
+          }
+
+          return {
+            id: notification.notification_id,
+            studentName: studentName,
+            from: notification.from,
+            course: notification.course,
+            message: notification.msg,
+            time: timeString,
+            read: notification.status === "read",
+            requestId: notification.notification_id,
+            created_at: notification.created_at
+          };
+        });
   
         setNotifications(formattedNotifications);
-  
-        // Count unread notifications
         const unreadCount = formattedNotifications.filter((n) => !n.read).length;
         setUnreadCount(unreadCount);
       } catch (error) {
@@ -54,6 +82,8 @@ const HeaderInstructor = () => {
     };
   
     fetchNotifications();
+    const interval = setInterval(fetchNotifications, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const toggleNavigation = () => {
@@ -75,22 +105,14 @@ const HeaderInstructor = () => {
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
     if (!showNotifications && unreadCount > 0) {
-      // Mark as read when opened
       setNotifications(notifications.map(n => ({ ...n, read: true })));
       setUnreadCount(0);
     }
   };
 
-  const handleViewRequest = (requestId) => {
-    // Close notifications popup
+  const handleViewRequest = (requestId, course, from) => {
     setShowNotifications(false);
-    // Navigate to dashboard chat requests with the specific request highlighted
-    navigate('/dashboard', { 
-      state: { 
-        activeTab: 'chatRequests',
-        highlightRequest: requestId 
-      } 
-    });
+    navigate(`/join-chat/${course}/${from}`);
   };
 
   return (
@@ -100,36 +122,18 @@ const HeaderInstructor = () => {
       }`}
     >
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a className="block w-[12rem] xl:mr-8" href="#hero">
-          <img src={edunova} width={190} height={40} alt="EduNova" />
-        </a>
-
-        <nav
-          className={`${
-            openNavigation ? "flex" : "hidden"
-          } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent`}
+        <button 
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-n-7 transition-colors"
         >
-          <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
-            {navigationInstructor.map((item) => (
-              <a
-                key={item.id}
-                href={item.url}
-                onClick={handleClick}
-                className={`block relative font-code text-2xl uppercase text-n-1 transition-colors hover:text-color-1 ${
-                  item.onlyMobile ? "lg:hidden" : ""
-                } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${
-                  item.url === pathname.hash
-                    ? "z-2 lg:text-n-1"
-                    : "lg:text-n-1/50"
-                } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
-              >
-                {item.title}
-              </a>
-            ))}
-          </div>
+          <ArrowLeft size={20} className="text-n-1" />
+        </button>
 
-          <HamburgerMenu />
-        </nav>
+        <div className="flex-1 flex justify-center">
+          <a className="block" href="#hero">
+            <img src={edunova} width={190} height={40} alt="EduNova" />
+          </a>
+        </div>
 
         {/* Notifications Area */}
         <div className="relative hidden lg:block mr-6">
@@ -161,7 +165,7 @@ const HeaderInstructor = () => {
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <div 
-                      key={notification.id} // Keep the key for React's reconciliation but don't display it
+                      key={notification.id}
                       className={`p-4 border-b border-n-6 hover:bg-n-7 transition-colors ${
                         !notification.read ? "bg-n-7/50" : ""
                       }`}
@@ -173,7 +177,7 @@ const HeaderInstructor = () => {
                       <p className="text-sm text-n-2 mt-1">{notification.course}</p>
                       <p className="text-sm text-n-2 mt-1">{notification.message}</p>
                       <button 
-                        onClick={() => handleViewRequest(notification.requestId)} // Use requestId for navigation logic
+                        onClick={() => handleViewRequest(notification.requestId, notification.course, notification.from)}
                         className="mt-2 text-xs text-purple-500 hover:text-purple-400"
                       >
                         View Request
