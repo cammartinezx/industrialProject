@@ -213,9 +213,9 @@ export const fetchCourseById = async (courseId) => {
 
         {/* Buttons (Aligned to Right) */}
         <div className="flex space-x-2 ml-auto">
-        <Button2 type="button" white className="px-4 py-2" >
+        {/* <Button2 type="button" white className="px-4 py-2" >
     See Info
-  </Button2>
+  </Button2> */}
           
           <Link to={`/join-chat/${courseId}/${student.user_id}`}>
             <Button2 type="button" white className="px-4 py-2">
