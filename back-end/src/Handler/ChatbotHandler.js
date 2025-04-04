@@ -34,7 +34,7 @@ class ChatbotHandler {
 
       // Get the pre-signed URL
       const res = await axios.get(`http://localhost:3001/s3Url-download`, {
-          params: { fileName: "stat3000/representation" },
+          params: { fileName: "comp2280/Representation.md" },
       });
 
       const s3Url = res.data.urlS3?.downloadURL;

@@ -1,5 +1,3 @@
-
-
 import Arrow from "../../assets/svg/Arrow.jsx";
 import ButtonGradient from "../../assets/svg/ButtonGradient.jsx";
 
@@ -121,7 +119,11 @@ export const fetchCourseById = async (courseId) => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const courseDetails = getCourseDetails(course);
+    // Create custom courseDetails that uses students.length
+    const courseDetails = [
+      { label: "Course Code", value: course?.course_id || "N/A" },
+      { label: "Total Students", value: students.length || "0" }
+    ];
     const [open, setOpen] = useState(false);
     useEffect(() => {
       const fetchCourse = async () => {
