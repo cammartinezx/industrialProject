@@ -13,7 +13,13 @@ const HeaderStudent = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
+    const willShow = !showNotifications;
+    setShowNotifications(willShow);
+    
+    // Reset unread count when opening notifications
+    if (willShow && unreadCount > 0) {
+      setUnreadCount(0);
+    }
   };
 
   useEffect(() => {
@@ -38,8 +44,9 @@ const HeaderStudent = () => {
 
         setNotifications(formattedNotifications);
 
-        const unreadCount = formattedNotifications.filter((n) => !n.read).length;
-        setUnreadCount(unreadCount);
+        // Update unread count based on fetched notifications
+        const count = formattedNotifications.filter((n) => !n.read).length;
+        setUnreadCount(count);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
