@@ -3,6 +3,7 @@ const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
 const marked = require("marked");
+const url = "http://localhost:3001";
 
 
 class ChatbotHandler {
@@ -34,8 +35,9 @@ class ChatbotHandler {
 
       // Get the pre-signed URL
       const res = await axios.get(`http://localhost:3001/s3Url-download`, {
-          params: { fileName: "stat3000/representation" },
+          params: { fileName: "comp2280/Representation" },
       });
+    
 
       const s3Url = res.data.urlS3?.downloadURL;
       if (!s3Url) {
@@ -46,17 +48,14 @@ class ChatbotHandler {
 
       // Fetch the markdown file
       const fileResponse = await axios.get(s3Url);
-      console.log("Raw Markdown Content:", fileResponse);
       let markdownContent = fileResponse.data;
 
-      // Log raw content for debugging
-      console.log("Raw Markdown Content:", markdownContent);
 
       // Process the markdown content
       markdownContent = markdownContent.replace(/<aside.*?<\/aside>/gs, '');
 
       //Log cleaned content before parsing
-      console.log("Cleaned Markdown Content:", markdownContent);
+      //console.log("Cleaned Markdown Content:", markdownContent);
 
       return marked.parse(markdownContent, { mangle: false, headerIds: false })
                    .replace(/<[^>]+>/g, '')
@@ -123,6 +122,7 @@ class ChatbotHandler {
         });
 
         const client = await auth.getClient();
+      
         return await client.fetchIdToken('https://ollama-gemma-219112529214.us-central1.run.app/');
     }
 
@@ -138,11 +138,13 @@ You are provided the following content:\n${this.knowledgeBase}\n\nGenerate 5 mul
    Correct Answer: [Correct option]
 `;
             const idToken = await this.getAccessToken();
+            console.log(idToken);
             const response = await axios.post(
                 'https://ollama-gemma-219112529214.us-central1.run.app/api/generate',
                 { model: "gemma2:9b", prompt: prompt, stream: false },
                 { headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' } }
             );
+            console.log(response);
             return response.data.response.trim();
         } catch (error) {
             console.error("Error generating quiz:", error);
