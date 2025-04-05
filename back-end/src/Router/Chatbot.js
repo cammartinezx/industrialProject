@@ -3,6 +3,9 @@ const router = express.Router();
 const ChatbotHandler = require('../Handler/ChatbotHandler');
 
 const chatbot_handler = new ChatbotHandler();
+(async () => {
+    await chatbot_handler.init(); 
+})();
 
 router.post('/ask', async (req, res) => {
     chatbot_handler.chat(req, res);

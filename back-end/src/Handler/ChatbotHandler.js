@@ -9,7 +9,7 @@ const url = "http://localhost:3001";
 class ChatbotHandler {
     constructor() {
         this.conversationHistory = [];
-        this.knowledgeBase = this.loadKnowledgeBase();
+        this.knowledgeBase = null;
         this.hasSentIntro = false; // Track if intro has been sent
     }
 
@@ -28,6 +28,10 @@ class ChatbotHandler {
     //                  .replace(/\n+/g, '\n')
     //                  .trim();
     // }
+    async init() {
+        this.knowledgeBase = await this.loadKnowledgeBase();
+    }
+
 
  async loadKnowledgeBase() {
   try {
@@ -40,6 +44,7 @@ class ChatbotHandler {
     
 
       const s3Url = res.data.urlS3?.downloadURL;
+   
       if (!s3Url) {
           throw new Error("Failed to get S3 file URL");
       }
@@ -48,6 +53,7 @@ class ChatbotHandler {
 
       // Fetch the markdown file
       const fileResponse = await axios.get(s3Url);
+      //console.log(fileResponse);
       let markdownContent = fileResponse.data;
 
 
@@ -137,8 +143,9 @@ You are provided the following content:\n${this.knowledgeBase}\n\nGenerate 5 mul
    d) [Option 4]
    Correct Answer: [Correct option]
 `;
+console.log(prompt);
             const idToken = await this.getAccessToken();
-            console.log(idToken);
+      
             const response = await axios.post(
                 'https://ollama-gemma-219112529214.us-central1.run.app/api/generate',
                 { model: "gemma2:9b", prompt: prompt, stream: false },
