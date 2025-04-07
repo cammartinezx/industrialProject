@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Courses from "./Courses.jsx";
-import HeaderStudent from "../Headers/HeaderStudent.jsx";
-import HeaderInstructor from "../Headers/HeaderInstructor.jsx";
+import HeaderStudentMain from "../Headers/HeaderStudentMain.jsx";
+import HeaderInstructorMain from "../Headers/HeaderInstructorMain.jsx";
 import PastConversationsTable from './PastConversationsTable.jsx';
 
 
@@ -142,7 +142,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden">
-        {role === "student" ? <HeaderStudent /> : <HeaderInstructor />}
+        {role === "student" ? <HeaderStudentMain /> : <HeaderInstructorMain />}
         
         {/* Tab Navigation */}
         <div className="container mx-auto px-4 py-6">
