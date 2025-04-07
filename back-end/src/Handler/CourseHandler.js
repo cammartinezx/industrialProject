@@ -1,4 +1,5 @@
 const Services = require('../Utility/Services');
+const { v4: uuidv4 } = require("uuid");
 const { validateString } = require('../Utility/validator');
 
 class CourseHandler {
@@ -7,12 +8,14 @@ class CourseHandler {
     #student_persistence;
     #instructor_persistence;
     #user_persistence;
+    #notification_persistence;
 
     constructor() {
         this.#course_persistence = Services.get_course_persistence();
         this.#student_persistence = Services.get_student_persistence();
         this.#instructor_persistence = Services.get_instructor_persistence();
         this.#user_persistence = Services.get_user_persistence();
+        this.#notification_persistence = Services.get_notification_persistence();
     }
 
     get_course_persistence() {
@@ -21,11 +24,10 @@ class CourseHandler {
 
     async create_course(request, response) {
         try {
-            let course_id = request.params.id.trim().toLowerCase();
+            let course_id = request.body.id.trim().toLowerCase();
             const title = request.body.title.trim();
             const course_description = request.body.description.trim();
-            const instructor_id = request.body.instructor_id.trim().toLowerCase();
-
+            const instructor_id = request.body.instructor_id;
             // validate the input
             // if (!validateString(course_id) || !validateString(title) || !validateString(course_description)) {
             //     return response.status(400).json({ message: "Invalid input" });
@@ -42,9 +44,32 @@ class CourseHandler {
             if (course !== null) {
                 return response.status(400).json({ message: "Course already exists" });
             }
-
+            
             // add the course to the database
             await this.#course_persistence.create_course(course_id, title, course_description, instructor_id);
+            // add course_id into instructor's course_taught
+            await this.#instructor_persistence.add_course(instructor_id, course_id);
+
+            // update notification for all students
+            const student_ids = await this.#user_persistence.get_all_student_ids();
+            for (let student_id of student_ids) {
+                const notification_id = uuidv4();
+                let item = await this.#user_persistence.get_user(instructor_id);
+                const sender_name = item.name;
+                const message = `New course ${title} has been created by ${sender_name}. You can now enroll in the course with the code ${course_id}.`;
+                // create notification
+                await this.#notification_persistence.generate_new_notification(
+                    notification_id,
+                    message,
+                    "unread",
+                    instructor_id,
+                    student_id,
+                    course_id,
+                    "course-created",
+                );
+                // update user's notification
+                await this.#user_persistence.update_user_notifications(notification_id, student_id);
+            }
             response.status(200).json({ message: "Course added" });
         } catch (error) {
             response.status(500).json({ message: error.message });

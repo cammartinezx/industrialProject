@@ -38,6 +38,13 @@ class StudentHandler {
      */
     #student_persistence;
 
+    /**         
+     * The course persistence object used by the info handler.
+     * @type {string}
+     * @private
+     */
+    #course_persistence;
+
     /**
      * Create a new UserInfoHandler object
      * @constructor
@@ -46,6 +53,7 @@ class StudentHandler {
         this.#student_persistence = Services.get_student_persistence();
         this.#user_persistence = Services.get_user_persistence();
         this.#notification_persistence = Services.get_notification_persistence();
+        this.#course_persistence = Services.get_course_persistence();
     }
 
     get_student_persistence() {
@@ -58,6 +66,10 @@ class StudentHandler {
 
     get_notification_persistence() {
         return this.#notification_persistence;
+    }
+
+    get_course_persistence() {
+        return this.#course_persistence;
     }
 
     async create_student(request, response) {
@@ -209,9 +221,9 @@ class StudentHandler {
         }
     }
     
-    async request_course(request, response) {
+    async join_course(request, response) {
         try {
-            let user_id = request.params.id.trim().toLowerCase();
+            let user_id = request.body.user_id;
             let course_id = request.body.course_id.trim().toLowerCase();
             try {
                 validateString(user_id, "user");
@@ -225,6 +237,9 @@ class StudentHandler {
                 return response.status(404).json({ message: error.message });
             }
             try {
+                // update student list in course
+                await this.#course_persistence.add_student(user_id, course_id);
+
                 let result = await this.#student_persistence.add_course(user_id, course_id);
                 return response.status(result.status).json({ message: result.message });
             } catch (error) {

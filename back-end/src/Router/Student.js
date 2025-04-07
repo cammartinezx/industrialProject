@@ -97,8 +97,8 @@ router.get("/:id/courses", (req, res) => {
  * @code {500} Backend error from the database.
  * @response {Object} message Response message indicating success or failure.
  */
-router.post("/:id/request-course", (req, res) => {
-    student_handler.request_course(req, res);
+router.post("/join-course", (req, res) => {
+    student_handler.join_course(req, res);
 });
 
 router.use("/", (req, res) => {
