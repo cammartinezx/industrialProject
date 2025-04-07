@@ -4,8 +4,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { edunova } from "../../assets";
 import { url } from "../../constants";
-import Button from "../design/Button";
 import { Bell, X, ArrowLeft } from "lucide-react";
+import Button from "../design/Button";
+import ButtonGradient from "../../assets/svg/ButtonGradient";
+import { HamburgerMenu } from "../design/Header";
+
 
 const HeaderStudent = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -56,6 +59,8 @@ const HeaderStudent = () => {
   }, []);
 
   return (
+    <>
+    <ButtonGradient />
     <div className="fixed top-0 left-0 w-full z-50 border-b border-n-6 bg-n-8/90 backdrop-blur-sm">
       <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <div className="flex items-center gap-4">
@@ -79,8 +84,11 @@ const HeaderStudent = () => {
               </span>
             )}
           </button>
-          
-          <Button href="/">Log Out</Button>
+
+          {/* This now uses the same gradient border as the Instructor button */}
+          <Button className="hidden lg:flex" href="/">
+            Log Out
+          </Button>
         </div>
       </div>
 
@@ -107,6 +115,7 @@ const HeaderStudent = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

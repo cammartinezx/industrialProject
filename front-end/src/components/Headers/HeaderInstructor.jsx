@@ -8,6 +8,7 @@ import Button from "../design/Button";
 import { HamburgerMenu } from "../design/Header";
 import axios from "axios";
 import { url } from "../../constants";
+import ButtonGradient from "../../assets/svg/ButtonGradient";
 
 const HeaderInstructor = () => {
   const pathname = useLocation();
@@ -116,105 +117,109 @@ const HeaderInstructor = () => {
   };
 
   return (
-    <div
-      className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
-        openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
-      }`}
-    >
-      <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <button 
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-n-7 transition-colors"
-        >
-          <ArrowLeft size={20} className="text-n-1" />
-        </button>
-
-        <div className="flex-1 flex justify-center">
-          <a className="block" href="#hero">
-            <img src={edunova} width={190} height={40} alt="EduNova" />
-          </a>
-        </div>
-
-        {/* Notifications Area */}
-        <div className="relative hidden lg:block mr-6">
+    <>
+      <ButtonGradient />
+      <div
+        className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
+          openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
+        }`}
+      >
+        <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
           <button 
-            className="relative p-2 rounded-full hover:bg-n-7 transition-colors"
-            onClick={toggleNotifications}
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-n-7 transition-colors"
           >
-            <Bell size={24} className="text-n-1" />
-            {unreadCount > 0 && (
-              <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                {unreadCount}
-              </span>
-            )}
+            <ArrowLeft size={20} className="text-n-1" />
           </button>
-
-          {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 bg-n-8 border border-n-6 rounded-lg shadow-lg z-50">
-              <div className="p-4 border-b border-n-6 flex justify-between items-center">
-                <h3 className="font-semibold text-n-1">Notifications</h3>
-                <button 
-                  onClick={toggleNotifications}
-                  className="text-n-3 hover:text-n-1"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-              
-              <div className="max-h-96 overflow-y-auto">
-                {notifications.length > 0 ? (
-                  notifications.map((notification) => (
-                    <div 
-                      key={notification.id}
-                      className={`p-4 border-b border-n-6 hover:bg-n-7 transition-colors ${
-                        !notification.read ? "bg-n-7/50" : ""
-                      }`}
-                    >
-                      <div className="flex justify-between">
-                        <span className="font-medium text-n-1">{notification.studentName}</span>
-                        <span className="text-xs text-n-3">{notification.time}</span>
-                      </div>
-                      <p className="text-sm text-n-2 mt-1">{notification.course}</p>
-                      <p className="text-sm text-n-2 mt-1">{notification.message}</p>
-                      <button 
-                        onClick={() => handleViewRequest(notification.requestId, notification.course, notification.from)}
-                        className="mt-2 text-xs text-purple-500 hover:text-purple-400"
-                      >
-                        View Request
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-4 text-center text-n-3">
-                    No new notifications
-                  </div>
-                )}
-              </div>
+  
+          <div className="flex-1 flex justify-center">
+            <a className="block" href="#hero">
+              <img src={edunova} width={190} height={40} alt="EduNova" />
+            </a>
+          </div>
+  
+          {/* Notifications Area */}
+          <div className="relative hidden lg:block mr-6">
+            <button 
+              className="relative p-2 rounded-full hover:bg-n-7 transition-colors"
+              onClick={toggleNotifications}
+            >
+              <Bell size={24} className="text-n-1" />
+              {unreadCount > 0 && (
+                <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+  
+            {showNotifications && (
+              <div className="absolute right-0 mt-2 w-80 bg-n-8 border border-n-6 rounded-lg shadow-lg z-50">
+                <div className="p-4 border-b border-n-6 flex justify-between items-center">
+                  <h3 className="font-semibold text-n-1">Notifications</h3>
+                  <button 
+                    onClick={toggleNotifications}
+                    className="text-n-3 hover:text-n-1"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
                 
-              <div className="p-2 border-t border-n-6 text-center">
-                <button className="text-xs text-purple-500 hover:text-purple-400">
-                  View All Notifications
-                </button>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <div 
+                        key={notification.id}
+                        className={`p-4 border-b border-n-6 hover:bg-n-7 transition-colors ${
+                          !notification.read ? "bg-n-7/50" : ""
+                        }`}
+                      >
+                        <div className="flex justify-between">
+                          <span className="font-medium text-n-1">{notification.studentName}</span>
+                          <span className="text-xs text-n-3">{notification.time}</span>
+                        </div>
+                        <p className="text-sm text-n-2 mt-1">{notification.course}</p>
+                        <p className="text-sm text-n-2 mt-1">{notification.message}</p>
+                        <button 
+                          onClick={() => handleViewRequest(notification.requestId, notification.course, notification.from)}
+                          className="mt-2 text-xs text-purple-500 hover:text-purple-400"
+                        >
+                          View Request
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-n-3">
+                      No new notifications
+                    </div>
+                  )}
+                </div>
+                  
+                <div className="p-2 border-t border-n-6 text-center">
+                  <button className="text-xs text-purple-500 hover:text-purple-400">
+                    View All Notifications
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+  
+          {/* Logout Button */}
+          <Button className="hidden lg:flex" href="/">
+            Log Out
+          </Button>
+  
+          <Button
+            className="ml-auto lg:hidden"
+            px="px-3"
+            onClick={toggleNavigation}
+          >
+            <Menu size={24} />
+          </Button>
         </div>
-
-        {/* Logout Button */}
-        <Button className="hidden lg:flex" href="/">
-          Log Out
-        </Button>
-
-        <Button
-          className="ml-auto lg:hidden"
-          px="px-3"
-          onClick={toggleNavigation}
-        >
-          <Menu size={24} />
-        </Button>
       </div>
-    </div>
+    </>
   );
+  
 };
 
 export default HeaderInstructor;
