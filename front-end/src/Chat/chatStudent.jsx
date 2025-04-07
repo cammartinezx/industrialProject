@@ -5,7 +5,7 @@ import axios from "axios";
 import HeaderChatStudent from "../components/Headers/HeaderChatStudent";
 import HeaderStudent from "../components/Headers/HeaderChatStudent";
 import html2pdf from "html2pdf.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { url } from "../constants";
 import logo from "../assets/edunova.svg";
@@ -19,6 +19,13 @@ const ChatStudent = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+
+  const messagesEndRef = useRef(null); // Ref for scrolling to bottom
+
+  // Function to scroll to the bottom of the messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Function to fetch the conversation history
   const fetchConversationHistory = async () => {
@@ -70,6 +77,11 @@ const ChatStudent = () => {
   useEffect(() => {
     fetchConversationHistory();
   }, [courseId, unitIndex]);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -321,6 +333,9 @@ const ChatStudent = () => {
               {msg.text}
             </div>
           ))}
+          
+          {/* Dummy div to allow scrolling to bottom */}
+          <div ref={messagesEndRef} />
 
           {/* Typing Indicator */}
           {isTyping && (
