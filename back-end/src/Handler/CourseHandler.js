@@ -153,6 +153,51 @@ class CourseHandler {
             return response.status(500).json({ message: error.message });
         }
     }
+
+    async add_prompt(request, response) {
+        const course_id = request.body.course_id;
+        const title = request.body.title.trim().toLowerCase();
+        const description = request.body.description.trim().toLowerCase();
+        try {
+            // Fetch the instructor id from the course
+            const instructor_id = await this.#course_persistence.get_instructor(course_id);
+            
+            if (!instructor_id) {
+                return response.status(404).json({ message: "Instructor not found for this course" });
+            }
+
+            // Add the prompt to the course
+            await this.#course_persistence.add_prompt(course_id, title, description);
+
+            return response.status(200).json({ message: "Prompt added successfully" });
+
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
+
+    async update_prompt(request, response) {
+        const course_id = request.body.course_id;
+        const prompt_index = request.body.prompt_index;
+        const title = request.body.title.trim().toLowerCase();
+        const description = request.body.description.trim().toLowerCase();
+        try {
+            await this.#course_persistence.update_prompt(course_id, prompt_index, title, description);
+            return response.status(200).json({ message: "Prompt updated successfully" });
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
+
+    async get_prompts(request, response) {
+        const course_id = request.params.course_id;
+        try {
+            const prompts = await this.#course_persistence.get_prompts(course_id);
+            return response.status(200).json({ prompts });
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = CourseHandler;

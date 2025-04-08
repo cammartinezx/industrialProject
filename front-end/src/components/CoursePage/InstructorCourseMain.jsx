@@ -12,6 +12,7 @@ import Button2 from "../design/Button2.jsx";
 import Button from "../design/Button.jsx";
 import HeaderInstructor from "../Headers/HeaderInstructor.jsx";
 import AssignMaterialDialog from "./AssignMaterialDialog.jsx";
+import PromptManager from "./PromptManager.jsx";
 
 
 /**
@@ -119,12 +120,13 @@ export const fetchCourseById = async (courseId) => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [showPrompts, setShowPrompts] = useState(false);
     // Create custom courseDetails that uses students.length
     const courseDetails = [
       { label: "Course Code", value: course?.course_id || "N/A" },
       { label: "Total Students", value: students.length || "0" }
     ];
-    const [open, setOpen] = useState(false);
     useEffect(() => {
       const fetchCourse = async () => {
         try {
@@ -182,9 +184,14 @@ export const fetchCourseById = async (courseId) => {
     ))}
   </ul>
 
-  <Button type="button" className="w-1/4 py-5" onClick={() => setOpen(true)}>
-                        Assign<br /> Material
-                    </Button>
+  <div className="flex gap-2 w-1/3">
+    <Button type="button" className="py-5 flex-1" onClick={() => setOpen(true)}>
+      Assign<br /> Material
+    </Button>
+    <Button type="button" className="py-5 flex-1" onClick={() => setShowPrompts(!showPrompts)}>
+      {showPrompts ? 'Hide' : 'Manage'}<br /> Prompts
+    </Button>
+  </div>
                     
                 </div>
             </div>
@@ -193,6 +200,12 @@ export const fetchCourseById = async (courseId) => {
   {open && <AssignMaterialDialog open={open} setOpen={setOpen} courseId={courseId} />}
 </div>
 
+{/* Prompt Manager Section */}
+{showPrompts && (
+  <div className="container relative z-2 mt-6">
+    <PromptManager courseId={courseId} />
+  </div>
+)}
 
 <div className="container relative z-2 mt-6">
 

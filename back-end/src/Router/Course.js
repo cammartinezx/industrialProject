@@ -28,6 +28,18 @@ router.get('/:course_id/get-instructor', async (req, res) => {
     course_handler.get_instructor_of_course(req, res);
 });
 
+router.post('/add-prompt', async (req, res) => {
+    course_handler.add_prompt(req, res);
+});
+
+router.patch('/update-prompt', async (req, res) => {
+    course_handler.update_prompt(req, res);
+});
+
+router.get('/:course_id/get-prompts', async (req, res) => {
+    course_handler.get_prompts(req, res);
+});
+
 router.use("/", (req, res) => {
     res.status(200).json({ Message: "Welcome to the Course paths" });
 });
