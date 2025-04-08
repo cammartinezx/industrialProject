@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import { Bell, Menu, X, ArrowLeft } from "lucide-react";
+import { Bell, Menu, X} from "lucide-react";
 import { useState, useEffect } from "react";
 import { edunova } from "../../assets";
 import { navigationInstructor } from "../../constants";
@@ -125,12 +125,12 @@ const HeaderInstructor = () => {
         }`}
       >
         <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-          <button 
+          {/* <button 
             onClick={() => navigate(-1)}
             className="p-2 rounded-full hover:bg-n-7 transition-colors"
           >
             <ArrowLeft size={20} className="text-n-1" />
-          </button>
+          </button> */}
   
           <div className="flex-1 flex justify-center">
             <a className="block" href="#hero">

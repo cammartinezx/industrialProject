@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import HeaderChatInstructor from "../components/Headers/HeaderChatInstructor";
@@ -11,6 +11,12 @@ const ChatInstructor = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [editingMessageId, setEditingMessageId] = useState(null); // Track the message being edited
   const [editedMessage, setEditedMessage] = useState(""); // Track the edited message text
+  const messagesEndRef = useRef(null); // Ref for scrolling to bottom
+
+  // Function to scroll to the bottom of the messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Function to fetch the conversation history
   const fetchConversationHistory = async () => {
@@ -39,6 +45,11 @@ const ChatInstructor = () => {
   useEffect(() => {
     fetchConversationHistory();
   }, [courseId, userId]);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   // Function to handle editing a message
   const handleEditMessage = (messageId, currentText) => {
@@ -138,7 +149,8 @@ const ChatInstructor = () => {
             </div>
           ))}
 
-          {/* ... [keep typing indicator the same] ... */}
+          {/* Dummy div to allow scrolling to bottom */}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* ... [keep input section the same] ... */}

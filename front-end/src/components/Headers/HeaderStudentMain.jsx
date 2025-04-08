@@ -4,7 +4,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { edunova } from "../../assets";
 import { url } from "../../constants";
-import { Bell, X, ArrowLeft } from "lucide-react";
+import { Bell, X } from "lucide-react";
 import Button from "../design/Button";
 import ButtonGradient from "../../assets/svg/ButtonGradient";
 import { HamburgerMenu } from "../design/Header";
@@ -64,9 +64,9 @@ const HeaderStudent = () => {
     <div className="fixed top-0 left-0 w-full z-50 border-b border-n-6 bg-n-8/90 backdrop-blur-sm">
       <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <div className="flex items-center gap-4">
-          <button onClick={() => window.history.back()} className="text-n-1 hover:text-color-1">
+          {/* <button onClick={() => window.history.back()} className="text-n-1 hover:text-color-1">
             <ArrowLeft size={24} />
-          </button>
+          </button> */}
         </div>
 
         <div className="flex-1 flex justify-center">

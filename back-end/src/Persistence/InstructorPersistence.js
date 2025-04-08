@@ -121,33 +121,33 @@ class InstructorPersistence {
         }
         return courses_taught;
     }
+
     async add_course(user_id, course_id) {
-        try{
-        const update_command = new UpdateCommand({
-            TableName: this.#table_name,
-            Key: { user_id: user_id },
-            UpdateExpression: "ADD #courses_taught :new_course",
-            ExpressionAttributeNames: {
-                "#courses_taught": "courses_taught", 
-            },
-            ExpressionAttributeValues: {
-                ":new_course": new Set([course_id]), // The course to add as a single-element list
-            },
-        });
-        await this.#doc_client.send(update_command);
-        return { status: 200, message: "course successfully added" };
-    }catch (error) {
-        if (error.name === "ConditionalCheckFailedException") {
-            return { status: 400, message: "User not found" };
-        } else {
-            throw error;
+        try {
+            // Use UpdateExpression with SET instead of ADD to handle cases where the attribute doesn't exist yet
+            const update_command = new UpdateCommand({
+                TableName: "Instructor",
+                Key: { user_id: user_id },
+                UpdateExpression: "SET #courses_taught = list_append(if_not_exists(#courses_taught, :empty_list), :new_course)",
+                ExpressionAttributeNames: {
+                    "#courses_taught": "courses_taught", 
+                },
+                ExpressionAttributeValues: {
+                    ":new_course": [course_id], // Single course as an array element
+                    ":empty_list": [], // Empty list for initialization
+                },
+            });
+            await this.#doc_client.send(update_command);
+            return { status: 200, message: "course successfully added" };
+        } catch (error) {
+            if (error.name === "ConditionalCheckFailedException") {
+                return { status: 404, message: "User not found" };
+            } else {
+                console.error("Error adding course:", error);
+                return { status: 500, message: "Failed to add course: " + error.message };
+            }
         }
     }
-    }
-
-
-    
-    
 }
 
 module.exports = InstructorPersistence;

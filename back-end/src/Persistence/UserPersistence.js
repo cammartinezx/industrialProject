@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand, QueryCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 require("dotenv").config();
 
 class UserPersistence {
@@ -157,6 +157,36 @@ class UserPersistence {
             notification = [];
         }
         return notification;
+    }
+    
+    /**
+     * Gets all user IDs where role is "student"
+     * @returns {Array} Array of student user IDs
+     */
+    async get_all_student_ids() {
+        try {
+            const scanCommand = new ScanCommand({
+                TableName: "User",
+                FilterExpression: "#role = :studentRole",
+                ExpressionAttributeNames: {
+                    "#role": "role"
+                },
+                ExpressionAttributeValues: {
+                    ":studentRole": "student"
+                },
+                ProjectionExpression: "user_id"
+            });
+            
+            const response = await this.#doc_client.send(scanCommand);
+            
+            // Extract just the user_id values from the items
+            const studentIds = response.Items.map(item => item.user_id);
+            
+            return studentIds;
+        } catch (error) {
+            console.error("Error fetching student IDs:", error);
+            throw error;
+        }
     }
   
 }

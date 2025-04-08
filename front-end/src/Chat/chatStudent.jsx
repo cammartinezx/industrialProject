@@ -19,7 +19,13 @@ const ChatStudent = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null);
+
+  const messagesEndRef = useRef(null); // Ref for scrolling to bottom
+
+  // Function to scroll to the bottom of the messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Function to fetch the conversation history
   const fetchConversationHistory = async () => {
@@ -76,12 +82,10 @@ const ChatStudent = () => {
     fetchConversationHistory();
   }, [courseId, unitIndex]);
 
-  // Scroll to the bottom when messages change
+  // Scroll to bottom whenever messages change
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages]); // Scroll every time `messages` changes
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -334,6 +338,9 @@ const ChatStudent = () => {
               <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
           ))}
+          
+          {/* Dummy div to allow scrolling to bottom */}
+          <div ref={messagesEndRef} />
 
           {/* Typing Indicator */}
           {isTyping && (
