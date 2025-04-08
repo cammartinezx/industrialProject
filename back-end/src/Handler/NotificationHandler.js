@@ -153,7 +153,7 @@ class NotificationHandler {
                     }
                     notificaion_list.push(notification);
                 }
-                return response.status(200).json(notificaion_list);
+                return response.status(200).json(notificaion_list.reverse());
             }
         } catch (error) {
             return response.status(500).json({ message: error.message });
