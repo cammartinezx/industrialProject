@@ -168,7 +168,7 @@ export const downloadFile = async ( courseId, fileName) => {
               </div>
 
               <Link 
-                to={`/chat/${courseId}/unit/${index+1}`} 
+                to={`/chat/${courseId}/unit/${index+1}/${unit}`} 
                 className="relative group"
               >
                 <img 

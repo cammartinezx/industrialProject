@@ -1,60 +1,65 @@
 
-
-//import { useParams } from "react-router-dom";
+import ReactMarkdown from 'react-markdown';
 import axios from "axios";
 import HeaderChatStudent from "../components/Headers/HeaderChatStudent";
 import HeaderStudent from "../components/Headers/HeaderChatStudent";
 import html2pdf from "html2pdf.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { url } from "../constants";
 import logo from "../assets/edunova.svg";
 
 
+
 const ChatStudent = () => {
-  const { courseId, unitIndex } = useParams();
+  const { courseId, unitIndex, unitName } = useParams();
   const location = useLocation();
   const title = location.state?.title || courseId;
   const userId = location.state?.userId || localStorage.getItem("userId");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
   // Function to fetch the conversation history
   const fetchConversationHistory = async () => {
     try {
-      // const response = await axios.get(`${url}/conversation/get-conversation/${courseId}/unit ${unitIndex}`);
-      // const conversation = response.data.conversation || [];
+      const response = await axios.get(`${url}/conversation/get-conversation/${courseId}/unit ${unitIndex}`);
+      console.log(`conv ${response}`);
   
-      const conversation = {
-        "conversation": [
-          {
-            "user_role": "student",
-            "message": "Hello, can you help me understand recursion?",
-            "timestamp": "2025-03-29T10:00:00Z"
-          },
-          {
-            "user_role": "ai",
-            "message": "Sure! Recursion is when a function calls itself to solve smaller instances of a problem.",
-            "timestamp": "2025-03-29T10:01:00Z"
-          },
-          {
-            "user_role": "student",
-            "message": "Can you give me an example?",
-            "timestamp": "2025-03-29T10:02:00Z"
-          },
-          {
-            "user_role": "ai",
-            "message": "Of course! The classic example is the factorial function: factorial(n) = n * factorial(n-1).",
-            "timestamp": "2025-03-29T10:03:00Z"
-          }
-        ]
-      };
+      const conversation = response.data.conversation || [];
+      
+  
+      // const conversation = {
+      //   "conversation": [
+      //     {
+      //       "user_role": "student",
+      //       "message": "Hello, can you help me understand recursion?",
+      //       "timestamp": "2025-03-29T10:00:00Z"
+      //     },
+      //     {
+      //       "user_role": "ai",
+      //       "message": "Sure! Recursion is when a function calls itself to solve smaller instances of a problem.",
+      //       "timestamp": "2025-03-29T10:01:00Z"
+      //     },
+      //     {
+      //       "user_role": "student",
+      //       "message": "Can you give me an example?",
+      //       "timestamp": "2025-03-29T10:02:00Z"
+      //     },
+      //     {
+      //       "user_role": "ai",
+      //       "message": "Of course! The classic example is the factorial function: factorial(n) = n * factorial(n-1).",
+      //       "timestamp": "2025-03-29T10:03:00Z"
+      //     }
+      //   ]
+      // };
   
       // ✅ Fix: Sort the messages inside the "conversation" array
-      const sortedMessages = conversation.conversation.sort((a, b) => 
+      const sortedMessages = conversation.sort((a, b) => 
         new Date(a.timestamp) - new Date(b.timestamp)
       );
+      console.log(`conv ${sortedMessages}`);
   
       setMessages(sortedMessages.map(msg => ({
         sender: msg.user_role === "student" ? "user" : "ai",
@@ -66,10 +71,17 @@ const ChatStudent = () => {
     }
   };
   
-  // Fetch the conversation history when the component mounts
+  // Fetch conversation history on mount
   useEffect(() => {
     fetchConversationHistory();
   }, [courseId, unitIndex]);
+
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]); // Scroll every time `messages` changes
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -83,6 +95,7 @@ const ChatStudent = () => {
       // Send the message to the backend (where the chat function is handled)
       const response = await axios.post(`${url}/chatbot/ask`, {
         msg: input, // Send the user's message
+        fileTitle: `${courseId}/${unitName}`
       });
 
       // save the user message to the conversation table database
@@ -289,19 +302,19 @@ const ChatStudent = () => {
   {/* Download Button */}
   <button
     onClick={handleDownloadPDF}
-    className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-4 lg:-mr-0.25 lg:text-xs lg:font-semibold border border-n-1 px-3 py-0.25 rounded-lg transition-colors hover:border-color-1"
-  >
+    className="text-n-1 font-code text-xs uppercase hover:text-color-1 md:py-4 lg:-mr-0.25 lg:text-xs lg:font-semibold border border-n-1 px-3 py-3 rounded-lg transition-colors hover:border-color-1" >
     Download
   </button>
 
   {/* Request Help Button */}
   <button
     onClick={handleRequestHelp}
-    className="text-n-1 font-code text-2xl uppercase hover:text-color-1 md:py-4 lg:-mr-0.25 lg:text-xs lg:font-semibold border border-n-1 px-3 py-0.25 rounded-lg transition-colors hover:border-color-1"
-  >
+    className="text-n-1 font-code text-xs uppercase hover:text-color-1 md:py-4 lg:-mr-0.25 lg:text-xs lg:font-semibold border border-n-1 px-3 py-3 rounded-lg transition-colors hover:border-color-1" >
+   
     Request Help
   </button>
 </div>
+
   </div>
 </div>
 
@@ -318,7 +331,7 @@ const ChatStudent = () => {
                   : "bg-n-3 text-black self-start"
               }`}
             >
-              {msg.text}
+              <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
           ))}
 
@@ -329,7 +342,11 @@ const ChatStudent = () => {
               Nova is thinking...
             </div>
           )}
+        
+
+        <div ref={messagesEndRef} />
         </div>
+
 
         {/* Input */}
         <div className="p-10 flex items-center">

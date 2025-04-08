@@ -9,7 +9,7 @@ const url = "http://localhost:3001";
 class ChatbotHandler {
     constructor() {
         this.conversationHistory = [];
-        this.knowledgeBase = null;
+        //this.knowledgeBase = null;
         this.hasSentIntro = false; // Track if intro has been sent
     }
 
@@ -28,18 +28,15 @@ class ChatbotHandler {
     //                  .replace(/\n+/g, '\n')
     //                  .trim();
     // }
-    async init() {
-        this.knowledgeBase = await this.loadKnowledgeBase();
-    }
 
-
- async loadKnowledgeBase() {
+ async loadKnowledgeBase(fileTitle) {
   try {
       console.log("Fetching pre-signed URL...");
+      console.log(fileTitle);
 
       // Get the pre-signed URL
       const res = await axios.get(`http://localhost:3001/s3Url-download`, {
-          params: { fileName: "comp2280/Representation" },
+          params: { fileName: fileTitle },
       });
     
 
@@ -132,16 +129,32 @@ class ChatbotHandler {
         return await client.fetchIdToken('https://ollama-gemma-219112529214.us-central1.run.app/');
     }
 
-    async generateQuiz() {
+    async generateQuiz(knowledgeBase) {
         try {
             const prompt = `
-You are provided the following content:\n${this.knowledgeBase}\n\nGenerate 5 multiple-choice questions with answers based on this content. Format each question as follows:
-1. Question: [Question text]
-   a) [Option 1]
-   b) [Option 2]
-   c) [Option 3]
-   d) [Option 4]
-   Correct Answer: [Correct option]
+
+You are an expert educational assistant. Based on the following content, generate **5 multiple-choice questions** with answers. The goal is to help a student test their understanding of the material.
+
+**Content:**  
+${knowledgeBase}
+
+**Instructions:**  
+- Write **clear and concise** questions.
+- Each question should have **4 options** labeled a) to d).
+- Format everything in **Markdown**, using **bold** for labels like "Question" and "Correct Answer".
+- Ensure proper newlines after each option using **two spaces at the end** of each line.
+
+**Format exactly like this:**
+
+**1. Question:** [Your question here]  
+a) [Option A]  
+b) [Option B]  
+c) [Option C]  
+d) [Option D]  
+**Correct Answer:** [Correct option letter]  
+---
+
+Generate exactly 5 questions in this format.
 `;
 console.log(prompt);
             const idToken = await this.getAccessToken();
@@ -151,7 +164,7 @@ console.log(prompt);
                 { model: "gemma2:9b", prompt: prompt, stream: false },
                 { headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' } }
             );
-            console.log(response);
+    
             return response.data.response.trim();
         } catch (error) {
             console.error("Error generating quiz:", error);
@@ -159,11 +172,32 @@ console.log(prompt);
         }
     }
 
-    async generateSummary() {
+    async generateSummary(knowledgeBase) {
         try {
             const prompt = `
-You are provided the following content:\n${this.knowledgeBase}\n\nGenerate a concise summary of this content in 150 words or less.
+You are an expert educational assistant. Based on the following content, generate a **comprehensive summary** that clearly explains the material to a student who is reviewing or studying it.
+
+**Content to summarize:**  
+${knowledgeBase}
+
+**Instructions:**  
+- Write in a **clear, informative, and approachable** tone.
+- Emphasize the **main concepts and learning objectives** of the material.
+- Use **markdown formatting** to make important terms and concepts stand out (e.g., use **bold** for terminology, use bullet points for lists).
+- Do **not copy-paste** the original text—paraphrase and explain the ideas in a simpler way.
+- Where appropriate, provide examples to clarify abstract concepts.
+- End the summary with a **“Key Takeaways”** section that highlights the most essential points (3–7 bullets).
+
+**Format Example:**
+
+[Multi-paragraph summary here]
+
+**Key Takeaways:**
+- ...
+- ...
+- ...
 `;
+
             const idToken = await this.getAccessToken();
             const response = await axios.post(
                 'https://ollama-gemma-219112529214.us-central1.run.app/api/generate',
@@ -178,11 +212,18 @@ You are provided the following content:\n${this.knowledgeBase}\n\nGenerate a con
     }
 
     getOptionMenu() {
-        return "Please pick one of the options:\n\nPress the number of the following options:\n1. Quiz mode\n2. Summary mode\n3. Show options again\n\nOr feel free to ask me any questions you might have.";
+        return `
+    Pick one of the following options and press the corresponding number:  
+    1. Quiz mode  
+    2. Summary mode  
+    3. Show options again  
+    Or feel free to ask me any questions you might have.`;
     }
 
     async chat(req, res) {
         try {
+            const { fileTitle } = req.body;
+            const knowledgeBase = await this.loadKnowledgeBase(fileTitle);
             // Send intro message automatically on first interaction
             if (!this.hasSentIntro) {
                 this.hasSentIntro = true;
@@ -199,11 +240,11 @@ You are provided the following content:\n${this.knowledgeBase}\n\nGenerate a con
             }
 
             if (message === "1") {
-                const quiz = await this.generateQuiz();
+                const quiz = await this.generateQuiz(knowledgeBase);
                 this.conversationHistory.push({ role: "assistant", content: quiz });
                 return res.json({ response: quiz });
             } else if (message === "2") {
-                const summary = await this.generateSummary();
+                const summary = await this.generateSummary(knowledgeBase);
                 this.conversationHistory.push({ role: "assistant", content: summary });
                 return res.json({ response: summary });
             } else if (message === "3") {
