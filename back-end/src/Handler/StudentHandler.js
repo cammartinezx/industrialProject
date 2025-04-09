@@ -76,7 +76,7 @@ class StudentHandler {
 
     async create_student(request, response) {
         try {
-            let user_id = request.params.id.trim().toLowerCase();
+            let user_id = request.params.id;
             let degree = request.body.degree.trim().toLowerCase();
             let dob = request.body.dob.trim().toLowerCase();
             let gpa = parseFloat(request.body.gpa); // Ensure GPA is a number
