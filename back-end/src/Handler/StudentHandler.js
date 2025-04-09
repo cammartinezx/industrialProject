@@ -6,6 +6,8 @@ const {
     validateUserExist,
     validateNonEmptyList,
     validatePositiveNumber,
+    validateCourseExist,
+    validateStudentInCourse
 } = require("../Utility/validator");
 
 /**
@@ -231,10 +233,25 @@ class StudentHandler {
             } catch (error) {
                 return response.status(422).json({ message: error.message });
             }
+
+            // check if user exists
             try {
                 await validateUserExist(this.#user_persistence, user_id);
             } catch (error) {
                 return response.status(404).json({ message: error.message });
+            }
+            // check if course exists
+            try {
+                await validateCourseExist(this.#course_persistence, course_id);
+            } catch (error) {
+                return response.status(404).json({ message: error.message });
+            }
+
+            // check if student is already in the course
+            try {
+                await validateStudentInCourse(this.#course_persistence, course_id, user_id);
+            } catch (error) {
+                return response.status(400).json({ message: "You are already enrolled in this course" });
             }
             try {
                 // update student list in course

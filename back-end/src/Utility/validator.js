@@ -23,6 +23,27 @@ async function validateUserExist(user_persistence, userId) {
     }
 }
 
+async function validateCourseExist(course_persistence, courseId) {  
+    let course = await course_persistence.get_course(courseId);
+    if (course === null) {
+        throw new Error("Course does not exist");
+    } else {
+        return course;
+    }
+}
+
+async function validateStudentInCourse(course_persistence, courseId, studentId) {
+    let course = await course_persistence.get_course(courseId);
+    if (course === null) {
+        throw new Error("Course does not exist");
+    } else {
+        let student_list = await course_persistence.get_students_in_course(courseId);
+        if (student_list.includes(studentId)) {
+            throw new Error("You already enrolled in this course!");
+        }
+    }
+}
+
 /**
  * Validate a date string.
  * @param {String} dateString "The date string to be validated in yyyy-MM-dd format"
@@ -66,4 +87,6 @@ module.exports = {
     validateUserExist,
     validateDate,
     validateNonEmptyList,
+    validateCourseExist,
+    validateStudentInCourse,
 };

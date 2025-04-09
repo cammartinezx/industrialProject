@@ -146,8 +146,9 @@ export const fetchCourseById = async (courseId) => {
           const studentList = await fetchStudentsByCourseId(courseId);
           setStudents(studentList);
         } catch (err) {
-          setError("Error fetching students");
-          console.error(err);
+          console.error("Error fetching students:", err);
+          setStudents([]); // Set empty array instead of error state
+          // Don't set error state for student fetch failures
         }
       };
   
