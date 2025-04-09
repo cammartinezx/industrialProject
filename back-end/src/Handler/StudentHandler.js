@@ -82,7 +82,7 @@ class StudentHandler {
             let gpa = parseFloat(request.body.gpa); // Ensure GPA is a number
             let preferred_learning_style = request.body.preferred_learning_style.trim().toLowerCase();
             let preferred_language = request.body.preferred_language.trim().toLowerCase();
-            let location = request.body.location.trim().toLowerCase();
+            let location = request.body.city.trim().toLowerCase();
     
             // Synchronous validation
             try {

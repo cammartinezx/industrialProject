@@ -26,18 +26,19 @@ const StudentForm = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (!major|| !dob || !gpa || !location || !preferredLanguage) {
+    if (!major || !dob || !gpa || !city || !preferredLanguage || !preferredLearningStyle) {
       setError("All fields are required");
       return;
     }
 
     try {
       const response = await axios.post(`${url}/student/${userId}/create-student`, {
+        degree: major,
         dob,
         gpa,
         city,
-        preferredLanguage,
-     
+        preferred_language: preferredLanguage,
+        preferred_learning_style: preferredLearningStyle
       });
       console.log(response);
 
