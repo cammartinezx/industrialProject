@@ -73,16 +73,21 @@ const StudentForm = () => {
                     <select
                       value={major}
                       onChange={(e) => setMajor(e.target.value)}
-                      className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
+                      className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white"
                       required
                     >
                       <option value="" disabled></option>
                       {majors.map((majorOption, index) => (
-                        <option key={index} value={majorOption}>
+                        <option
+                          key={index}
+                          value={majorOption}
+                          style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                        >
                           {majorOption}
                         </option>
                       ))}
                     </select>
+
                   </div>
 
                   {/* Date of Birth */}
@@ -98,75 +103,92 @@ const StudentForm = () => {
                   </div>
 
                  {/* GPA */}
-    <div>
-      <label className="block text-sm font-semibold pb-2">GPA</label>
-      <select
-        value={gpa}
-        onChange={(e) => setGpa(e.target.value)}
-        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
-        required
-      >
-        <option value="" disabled></option>
-        {gpaOptions.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </div>
+                    <div>
+                      <label className="block text-sm font-semibold pb-2">GPA</label>
+                      <select
+                        value={gpa}
+                        onChange={(e) => setGpa(e.target.value)}
+                        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white"
+                        required
+                      >
+                        <option value="" disabled></option>
+                        {gpaOptions.map((option) => (
+                          <option
+                            key={option.value}
+                            value={option.value}
+                            style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                          >
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-    {/* Location */}
-    <div>
-      <label className="block text-sm font-semibold pb-2">Location</label>
-      <select
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
-        required
-      >
-        <option value="" disabled></option>
-        {locationOptions.map((city) => (
-          <option key={city} value={city}>
-            {city}
-          </option>
-        ))}
-      </select>
-    </div>
+                    {/* Location */}
+                    <div>
+                      <label className="block text-sm font-semibold pb-2">Location</label>
+                      <select
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white"
+                        required
+                      >
+                        <option value="" disabled></option>
+                        {locationOptions.map((city) => (
+                          <option
+                            key={city}
+                            value={city}
+                            style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                          >
+                            {city}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-    {/* Preferred Language */}
-    <div>
-      <label className="block text-sm font-semibold pb-2">Preferred Language</label>
-      <select
-        value={preferredLanguage}
-        onChange={(e) => setPreferredLanguage(e.target.value)}
-        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 "
-        required
-      >
-        <option value="" disabled></option>
-        {languageOptions.map((language) => (
-          <option key={language} value={language}>
-            {language}
-          </option>
-        ))}
-      </select>
-    </div>
-     {/* Preferred Learning Style */}
-     <div>
-      <label className="block text-sm font-semibold pb-2">Preferred Learning Style</label>
-      <select
-        value={preferredLearningStyle}
-        onChange={(e) => setPreferredLearningStyle(e.target.value)}
-        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 mb-16"
-        required
-      >
-        <option value="" disabled></option>
-        {learningStyleOptions.map((style) => (
-          <option key={style.value} value={style.value}>
-            {style.label}
-          </option>
-        ))}
-      </select>
-    </div>
+                    {/* Preferred Language */}
+                    <div>
+                      <label className="block text-sm font-semibold pb-2">Preferred Language</label>
+                      <select
+                        value={preferredLanguage}
+                        onChange={(e) => setPreferredLanguage(e.target.value)}
+                        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white"
+                        required
+                      >
+                        <option value="" disabled></option>
+                        {languageOptions.map((language) => (
+                          <option
+                            key={language}
+                            value={language}
+                            style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                          >
+                            {language}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Preferred Learning Style */}
+                    <div>
+                      <label className="block text-sm font-semibold pb-2">Preferred Learning Style</label>
+                      <select
+                        value={preferredLearningStyle}
+                        onChange={(e) => setPreferredLearningStyle(e.target.value)}
+                        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white mb-16"
+                        required
+                      >
+                        <option value="" disabled></option>
+                        {learningStyleOptions.map((style) => (
+                          <option
+                            key={style.value}
+                            value={style.value}
+                            style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                          >
+                            {style.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
       
                  
                   <div className="flex justify-center mt-6">

@@ -69,12 +69,16 @@ const InstructorForm = () => {
                     <select
                       value={department}
                       onChange={(e) => setMajor(e.target.value)}
-                      className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
+                      className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white"
                       required
                     >
                       <option value="" disabled></option>
                       {majors.map((majorOption, index) => (
-                        <option key={index} value={majorOption}>
+                        <option
+                          key={index}
+                          value={majorOption}
+                          style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                        >
                           {majorOption}
                         </option>
                       ))}
@@ -100,12 +104,16 @@ const InstructorForm = () => {
       <select
         value={city}
         onChange={(e) => setCity(e.target.value)}
-        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
+        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white"
         required
       >
         <option value="" disabled></option>
         {locationOptions.map((city) => (
-          <option key={city} value={city}>
+          <option
+            key={city}
+            value={city}
+            style={{ backgroundColor: "#ffffff", color: "#000000" }}
+          >
             {city}
           </option>
         ))}
@@ -118,16 +126,21 @@ const InstructorForm = () => {
       <select
         value={preferred_language}
         onChange={(e) => setPreferredLanguage(e.target.value)}
-        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 mb-16"
+        className="w-full py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20 text-white mb-16"
         required
       >
         <option value="" disabled></option>
         {languageOptions.map((language) => (
-          <option key={language} value={language}>
+          <option
+            key={language}
+            value={language}
+            style={{ backgroundColor: "#ffffff", color: "#000000" }}
+          >
             {language}
           </option>
         ))}
       </select>
+
     </div>
                   {/* Sign Up Button */}
                   <div className="flex justify-center mt-6">

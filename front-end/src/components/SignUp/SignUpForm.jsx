@@ -97,12 +97,12 @@ const parallaxRef = useRef(null);
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full  py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
+            className="w-full px-4 py-3 border rounded-lg focus:ring focus:ring-blue-300 bg-n-4/20"
             required
           >
             <option value="" disabled></option>
-            <option value="student">Student</option>
-            <option value="instructor">Instructor</option>
+            <option style={{ backgroundColor: "#ffffff", color: "#000000"}} value="student">Student</option>
+            <option style={{ backgroundColor: "#ffffff", color: "#000000"}} value="instructor">Instructor</option>
           </select>
         </div>
 
