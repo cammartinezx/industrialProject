@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import HeaderChatInstructor from "../components/Headers/HeaderChatInstructor";
 import { url } from "../constants";
+import ReactMarkdown from 'react-markdown';
 
 const ChatInstructor = () => {
   const { courseId, userId } = useParams(); // Get courseId and userId from the URL
@@ -134,7 +135,7 @@ const ChatInstructor = () => {
                   </div>
                 ) : (
                   <div className="flex items-center justify-between w-full">
-                    <span>{msg.text}</span>
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
                     {msg.sender === "ai" && (
                       <button
                         onClick={() => handleEditMessage(msg.id, msg.text)}

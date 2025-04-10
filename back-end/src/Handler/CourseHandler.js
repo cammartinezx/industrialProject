@@ -189,6 +189,9 @@ class CourseHandler {
         }
     }
 
+
+    //{ title: "Quiz mode", description: "..." , index: 0 },
+
     async get_prompts(request, response) {
         const course_id = request.params.course_id;
         try {

@@ -150,63 +150,71 @@ class CoursePersistence {
     }
 
     async add_prompt(course_id, title, description) {
-        const promptString = `${title}: ${description}`;
+        const promptObject = {
+          title,
+          description,
+        };
+      
         const update_command = new UpdateCommand({
-            TableName: this.table_name,
-            Key: {
-                course_id: course_id,
-            },
-            UpdateExpression: "SET prompt_list = list_append(if_not_exists(prompt_list, :empty_list), :prompt)",
-            ExpressionAttributeValues: {
-                ":prompt": [promptString],
-                ":empty_list": [],
-            },
+          TableName: this.table_name,
+          Key: {
+            course_id: course_id,
+          },
+          UpdateExpression:
+            "SET prompt_list = list_append(if_not_exists(prompt_list, :empty_list), :prompt)",
+          ExpressionAttributeValues: {
+            ":prompt": [promptObject],
+            ":empty_list": [],
+          },
         });
-
+      
         await this.#doc_client.send(update_command);
-    }
-
-    async update_prompt(course_id, prompt_index, title, description) {
-        const promptString = `${title}: ${description}`;
+      }
+      
+      async update_prompt(course_id, prompt_index, title, description) {
+        const promptObject = {
+          title,
+          description,
+        };
+      
         const update_command = new UpdateCommand({
-            TableName: this.table_name,
-            Key: {
-                course_id: course_id,
-            },
-            UpdateExpression: `SET prompt_list[${prompt_index}] = :prompt`,
-            ExpressionAttributeValues: {
-                ":prompt": promptString
-            },
+          TableName: this.table_name,
+          Key: {
+            course_id: course_id,
+          },
+          UpdateExpression: `SET prompt_list[${prompt_index}] = :prompt`,
+          ExpressionAttributeValues: {
+            ":prompt": promptObject,
+          },
         });
-
+      
         try {
-            await this.#doc_client.send(update_command);
-            return { status: 200, message: "Prompt successfully updated" };
+          await this.#doc_client.send(update_command);
+          return { status: 200, message: "Prompt successfully updated" };
         } catch (error) {
-            console.error("Error updating prompt:", error);
-            return { status: 500, message: "Failed to update prompt" };
+          console.error("Error updating prompt:", error);
+          return { status: 500, message: "Failed to update prompt" };
         }
-    }
-    
-
-    async get_prompts(course_id) {
+      }
+      
+      async get_prompts(course_id) {
         const get_command = new GetCommand({
-            TableName: this.table_name,
-            Key: {
-                course_id: course_id,
-            },
-            ProjectionExpression: "prompt_list",
+          TableName: this.table_name,
+          Key: { course_id },
+          ProjectionExpression: "prompt_list",
         });
-
+      
         const response = await this.#doc_client.send(get_command);
         const promptList = response.Item?.prompt_list || [];
-        
-        // Return array of objects with prompt and index
+      
+        // Return array of { title, description, index }
         return promptList.map((prompt, index) => ({
-            prompt,
-            index
+          title: prompt.title,
+          description: prompt.description,
+          index,
         }));
-    }
+      }
+      
 }
 
 module.exports = CoursePersistence;
