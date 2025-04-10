@@ -99,7 +99,8 @@ const ChatStudent = () => {
       // Send the message to the backend (where the chat function is handled)
       const response = await axios.post(`${url}/chatbot/ask`, {
         msg: input, // Send the user's message
-        fileTitle: `${courseId}/${unitName}`
+        fileTitle: `${courseId}/${unitName}`,
+        courseId: `${courseId}`
       });
 
       // save the user message to the conversation table database
@@ -280,8 +281,6 @@ const ChatStudent = () => {
       alert("Failed to upload PDF.");
     }
   };
-  
-  
 
   return (
     <>

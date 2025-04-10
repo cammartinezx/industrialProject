@@ -25,6 +25,7 @@ const PromptManager = ({ courseId }) => {
     try {
       setLoading(true);
       const response = await axios.get(`${url}/course/${courseId}/get-prompts`);
+      console.log(response.data.prompts);
       setPrompts(response.data.prompts || []);
       setError(null);
     } catch (err) {
@@ -84,7 +85,8 @@ const PromptManager = ({ courseId }) => {
   };
 
   const handleEditClick = (prompt) => {
-    const [title, description] = prompt.prompt.split(': ');
+    const description = prompt.description;
+    const title = prompt.title;
     setSelectedPrompt(prompt);
     setFormData({ title, description });
     setShowUpdateForm(true);
@@ -204,8 +206,8 @@ const PromptManager = ({ courseId }) => {
                 className="flex justify-between items-center p-3 bg-n-8 rounded-lg"
               >
                 <div className="flex-1">
-                  <p className="font-semibold">{prompt.prompt.split(': ')[0]}</p>
-                  <p className="text-n-3">{prompt.prompt.split(': ')[1]}</p>
+                  <p className="font-semibold">{prompt.title}</p>
+                  <p className="text-n-3">{prompt.description}</p>
                 </div>
                 <Button2 
                   type="button" 
